@@ -1,8 +1,6 @@
-"""Replace TLS identifiers with readable names using the bundled IANA CSVs."""
+""" "Replace TLS identifiers with readable names using the bundled IANA CSVs."""
 
-import argparse
 import csv
-import json
 import re
 from pathlib import Path
 
@@ -44,9 +42,14 @@ def readable_name(value, names):
         return names.get(numeric_id(value), "Unknown algorithm")
     except ValueError:
         # Existing analyzer output sometimes already contains group names.
-        return next((name for name in names.values()
-                     if name.removesuffix(" (OBSOLETE)").lower() == str(value).lower()),
-                    "Unknown algorithm")
+        return next(
+            (
+                name
+                for name in names.values()
+                if name.removesuffix(" (OBSOLETE)").lower() == str(value).lower()
+            ),
+            "Unknown algorithm",
+        )
 
 
 def split_cipher_suite(name):
@@ -67,17 +70,25 @@ def split_cipher_suite(name):
     else:
         exchange = prefix.removesuffix("_EXPORT")
         exchanges = {
-            "RSA": ("RSA", "RSA"), "DHE_RSA": ("DHE", "RSA"),
-            "DHE_DSS": ("DHE", "DSA"), "ECDHE_RSA": ("ECDHE", "RSA"),
-            "ECDHE_ECDSA": ("ECDHE", "ECDSA"), "DH_RSA": ("DH", "RSA"),
-            "DH_DSS": ("DH", "DSA"), "ECDH_RSA": ("ECDH", "RSA"),
-            "ECDH_ECDSA": ("ECDH", "ECDSA"), "DH_anon": ("DH", "None"),
-            "ECDH_anon": ("ECDH", "None"), "PSK": ("PSK", "PSK"),
-            "DHE_PSK": ("DHE + PSK", "PSK"), "ECDHE_PSK": ("ECDHE + PSK", "PSK"),
+            "RSA": ("RSA", "RSA"),
+            "DHE_RSA": ("DHE", "RSA"),
+            "DHE_DSS": ("DHE", "DSA"),
+            "ECDHE_RSA": ("ECDHE", "RSA"),
+            "ECDHE_ECDSA": ("ECDHE", "ECDSA"),
+            "DH_RSA": ("DH", "RSA"),
+            "DH_DSS": ("DH", "DSA"),
+            "ECDH_RSA": ("ECDH", "RSA"),
+            "ECDH_ECDSA": ("ECDH", "ECDSA"),
+            "DH_anon": ("DH", "None"),
+            "ECDH_anon": ("ECDH", "None"),
+            "PSK": ("PSK", "PSK"),
+            "DHE_PSK": ("DHE + PSK", "PSK"),
+            "ECDHE_PSK": ("ECDHE + PSK", "PSK"),
             "RSA_PSK": ("RSA + PSK", "RSA + PSK"),
         }
         result["keyExchange"], result["authentication"] = exchanges.get(
-            exchange, (exchange, "Not determined"))
+            exchange, (exchange, "Not determined")
+        )
         if "EXPORT" in prefix:
             result["exportRestricted"] = True
 
@@ -85,42 +96,66 @@ def split_cipher_suite(name):
     if hashed:
         token = hashed[1]
         algorithm, bits = {
-            "SHA": ("SHA-1", 160), "SHA256": ("SHA-256", 256),
-            "SHA384": ("SHA-384", 384), "SHA512": ("SHA-512", 512),
-            "MD5": ("MD5", 128), "SM3": ("SM3", 256),
+            "SHA": ("SHA-1", 160),
+            "SHA256": ("SHA-256", 256),
+            "SHA384": ("SHA-384", 384),
+            "SHA512": ("SHA-512", 512),
+            "MD5": ("MD5", 128),
+            "SM3": ("SM3", 256),
             "ASCONHASH256": ("Ascon-Hash256", 256),
         }[token]
         result["hash"] = {"algorithm": algorithm, "outputBits": bits}
-        body = body[:hashed.start()]
+        body = body[: hashed.start()]
 
     encryption = {"algorithm": body, "keySizeBits": None, "mode": None}
     sized = re.fullmatch(r"(AES|CAMELLIA|ARIA)_(128|192|256)_(CBC|GCM|CCM|CCM_8)", body)
     if sized:
         algorithm, bits, mode = sized.groups()
-        encryption.update(algorithm=algorithm, keySizeBits=int(bits), mode=mode.removesuffix("_8"))
+        encryption.update(
+            algorithm=algorithm, keySizeBits=int(bits), mode=mode.removesuffix("_8")
+        )
         if mode in ("GCM", "CCM", "CCM_8"):
             encryption["authenticationTagBits"] = 64 if mode == "CCM_8" else 128
     elif body == "CHACHA20_POLY1305":
-        encryption.update(algorithm="ChaCha20", keySizeBits=256, mode="Stream cipher",
-                          authenticator="Poly1305", authenticationTagBits=128)
+        encryption.update(
+            algorithm="ChaCha20",
+            keySizeBits=256,
+            mode="Stream cipher",
+            authenticator="Poly1305",
+            authenticationTagBits=128,
+        )
     elif body in ("SM4_GCM", "SM4_CCM"):
-        encryption.update(algorithm="SM4", keySizeBits=128, mode=body.split("_")[1],
-                          authenticationTagBits=128)
+        encryption.update(
+            algorithm="SM4",
+            keySizeBits=128,
+            mode=body.split("_")[1],
+            authenticationTagBits=128,
+        )
     elif body == "3DES_EDE_CBC":
-        encryption.update(algorithm="3DES", keySizeBits=168, mode="CBC", construction="EDE")
+        encryption.update(
+            algorithm="3DES", keySizeBits=168, mode="CBC", construction="EDE"
+        )
     elif body in ("DES_CBC", "DES40_CBC", "IDEA_CBC"):
-        algorithm, bits = {"DES_CBC": ("DES", 56), "DES40_CBC": ("DES", 40),
-                           "IDEA_CBC": ("IDEA", 128)}[body]
+        algorithm, bits = {
+            "DES_CBC": ("DES", 56),
+            "DES40_CBC": ("DES", 40),
+            "IDEA_CBC": ("IDEA", 128),
+        }[body]
         encryption.update(algorithm=algorithm, keySizeBits=bits, mode="CBC")
     elif body.startswith("RC4_") and body[4:].isdigit():
-        encryption.update(algorithm="RC4", keySizeBits=int(body[4:]), mode="Stream cipher")
+        encryption.update(
+            algorithm="RC4", keySizeBits=int(body[4:]), mode="Stream cipher"
+        )
     elif body == "NULL":
         encryption.update(algorithm="None", keySizeBits=0)
     result["encryption"] = encryption
     if "hash" in result:
         result["hash"]["role"] = (
-            "HKDF and transcript hash" if not separator else
-            "PRF hash" if "authenticationTagBits" in encryption else "HMAC hash"
+            "HKDF and transcript hash"
+            if not separator
+            else "PRF hash"
+            if "authenticationTagBits" in encryption
+            else "HMAC hash"
         )
     return result
 
@@ -132,13 +167,23 @@ def split_group(name):
     parts = []
     lower = name.lower()
     if "x25519" in lower or lower == "x448":
-        parts.append({"algorithm": "ECDH", "curve": "X25519" if "x25519" in lower else "X448",
-                      "curveBits": 255 if "x25519" in lower else 448})
+        parts.append(
+            {
+                "algorithm": "ECDH",
+                "curve": "X25519" if "x25519" in lower else "X448",
+                "curveBits": 255 if "x25519" in lower else 448,
+            }
+        )
     else:
         curve = re.search(r"(sec[pt](\d+)[kr]\d|brainpoolP(\d+)r1)", name, re.I)
         if curve:
-            parts.append({"algorithm": "ECDH", "curve": curve[1],
-                          "curveBits": int(curve[2] or curve[3])})
+            parts.append(
+                {
+                    "algorithm": "ECDH",
+                    "curve": curve[1],
+                    "curveBits": int(curve[2] or curve[3]),
+                }
+            )
         elif lower.startswith("ffdhe") and lower[5:].isdigit():
             parts.append({"algorithm": "DH", "modulusBits": int(lower[5:])})
         elif "SM2" in name:
@@ -164,26 +209,23 @@ def translate_cbom(cbom):
         if component.get("type") != "network-session":
             continue
         properties = component["cryptoProperties"]
-        properties["cipherSuite"] = split_cipher_suite(readable_name(properties.get("cipherSuite"), suites))
-        properties["keyExchangeGroup"] = split_group(readable_name(properties.get("keyExchangeGroup"), groups))
+        properties["cipherSuite"] = split_cipher_suite(
+            readable_name(properties.get("cipherSuite"), suites)
+        )
+        properties["keyExchangeGroup"] = split_group(
+            readable_name(properties.get("keyExchangeGroup"), groups)
+        )
         properties["supportedGroups"] = [
-            split_group(readable_name(value, groups)) for value in properties.get("supportedGroups", [])
+            split_group(readable_name(value, groups))
+            for value in properties.get("supportedGroups", [])
         ]
         # The analyzer records ClientHello.version, not the negotiated version.
         properties["protocol"] = "TLS (negotiated version not determined)"
-        for field in ("cipherSuiteName", "keyExchangeGroupName", "supportedGroupNames", "protocolNote"):
+        for field in (
+            "cipherSuiteName",
+            "keyExchangeGroupName",
+            "supportedGroupNames",
+            "protocolNote",
+        ):
             properties.pop(field, None)
     return cbom
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", type=Path, help="Original network CBOM JSON")
-    parser.add_argument("output", type=Path, help="Readable network CBOM JSON")
-    args = parser.parse_args()
-    if args.input.resolve() == args.output.resolve():
-        parser.error("Choose a separate output file to preserve the original CBOM.")
-    with args.input.open(encoding="utf-8") as source:
-        cbom = translate_cbom(json.load(source))
-    args.output.write_text(json.dumps(cbom, indent=2) + "\n", encoding="utf-8")
-    print(f"Readable CBOM saved to {args.output}")
