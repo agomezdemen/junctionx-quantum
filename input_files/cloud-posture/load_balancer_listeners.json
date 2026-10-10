@@ -1,0 +1,114 @@
+{
+  "Account": "123456789012",
+  "Region": "eu-west-1",
+  "GeneratedAt": "2026-09-14T09:35:51Z",
+  "LoadBalancers": [
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/public-web-alb/1a2b3c4d5e6f7081",
+      "LoadBalancerName": "public-web-alb",
+      "Type": "application",
+      "Scheme": "internet-facing",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/public-web-alb/1a2b3c4d5e6f7081/aa11bb22cc33dd44",
+          "Protocol": "HTTPS",
+          "Port": 443,
+          "SslPolicy": "ELBSecurityPolicy-2016-08",
+          "Certificates": [{"CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/11111111-2222-3333-4444-555555555555"}]
+        },
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/public-web-alb/1a2b3c4d5e6f7081/bb22cc33dd44ee55",
+          "Protocol": "HTTP",
+          "Port": 80,
+          "DefaultActions": [{"Type": "redirect", "RedirectConfig": {"Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}]
+        }
+      ]
+    },
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/internal-admin-alb/2b3c4d5e6f708192",
+      "LoadBalancerName": "internal-admin-alb",
+      "Type": "application",
+      "Scheme": "internal",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/internal-admin-alb/2b3c4d5e6f708192/cc33dd44ee55ff66",
+          "Protocol": "HTTPS",
+          "Port": 443,
+          "SslPolicy": "ELBSecurityPolicy-TLS-1-1-2017-01",
+          "Certificates": [{"CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/22222222-3333-4444-5555-666666666666"}]
+        }
+      ]
+    },
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/api-gateway-alb/3c4d5e6f70819203",
+      "LoadBalancerName": "api-gateway-alb",
+      "Type": "application",
+      "Scheme": "internet-facing",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/api-gateway-alb/3c4d5e6f70819203/dd44ee55ff6600aa",
+          "Protocol": "HTTPS",
+          "Port": 443,
+          "SslPolicy": "ELBSecurityPolicy-FS-1-2-Res-2020-10",
+          "Certificates": [{"CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/33333333-4444-5555-6666-777777777777"}]
+        }
+      ]
+    },
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/partner-api-alb/4d5e6f7081920314",
+      "LoadBalancerName": "partner-api-alb",
+      "Type": "application",
+      "Scheme": "internet-facing",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/partner-api-alb/4d5e6f7081920314/ee55ff6600aa11bb",
+          "Protocol": "HTTPS",
+          "Port": 443,
+          "SslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
+          "Certificates": [{"CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/44444444-5555-6666-7777-888888888888"}]
+        }
+      ]
+    },
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/net/legacy-tcp-nlb/5e6f708192031425",
+      "LoadBalancerName": "legacy-tcp-nlb",
+      "Type": "network",
+      "Scheme": "internal",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/net/legacy-tcp-nlb/5e6f708192031425/ff6600aa11bb22cc",
+          "Protocol": "TLS",
+          "Port": 8443,
+          "SslPolicy": "ELBSecurityPolicy-TLS-1-2-2017-01",
+          "Certificates": [{"CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/55555555-6666-7777-8888-999999999999"}]
+        }
+      ]
+    },
+    {
+      "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/batch-internal-alb/6f70819203142536",
+      "LoadBalancerName": "batch-internal-alb",
+      "Type": "application",
+      "Scheme": "internal",
+      "VpcId": "vpc-0a1b2c3d4e5f67890",
+      "State": {"Code": "active"},
+      "Listeners": [
+        {
+          "ListenerArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/batch-internal-alb/6f70819203142536/0011aa22bb33cc44",
+          "Protocol": "HTTP",
+          "Port": 80,
+          "DefaultActions": [{"Type": "forward", "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/batch-workers/aabbccdd11223344"}]
+        }
+      ]
+    }
+  ]
+}
