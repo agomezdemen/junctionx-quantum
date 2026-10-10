@@ -21,13 +21,35 @@ class ClassificationTest(unittest.TestCase):
         for bits in [1024, 4096, None]:
             self.assertEqual(primitive_risk({"algorithm": "RSA", "keySizeBits": bits}, "keyExchange")["risk"], "CRITICAL")
 
-    def test_hybrid_is_combined_but_missing_authentication_is_unknown(self):
+    def test_hybrid_risk_excludes_missing_authentication(self):
         result = classify_session(session("TLS_AES_256_GCM_SHA384", "X25519MLKEM768"))
         self.assertEqual(result["encryptionAndKeyExchangeRisk"], "SAFE")
-        self.assertEqual(result["risk"], "UNKNOWN")
+        self.assertEqual(result["risk"], "SAFE")
+        self.assertEqual(result["findings"]["authentication"]["risk"], "UNKNOWN")
         self.assertEqual(result["missingOrUnsupported"], ["authentication"])
         result = classify_session(session("TLS_AES_128_GCM_SHA256", "X25519MLKEM768"))
         self.assertEqual(result["encryptionAndKeyExchangeRisk"], "MEDIUM")
+        self.assertEqual(result["risk"], "MEDIUM")
+
+    def test_authentication_contributes_only_when_recorded(self):
+        for authentication, expected in [
+            (None, "SAFE"), ({}, "SAFE"), ("", "SAFE"),
+            ({"algorithm": None}, "SAFE"), ("Not recorded", "SAFE"),
+            ("Not determined", "SAFE"), ("Negotiated separately", "SAFE"),
+            ("RSA", "CRITICAL"), ({"algorithm": "ECDSA"}, "CRITICAL"),
+            ({"algorithm": "ML-DSA", "parameterSet": "65"}, "SAFE"),
+            ({"algorithm": "ML-DSA"}, "UNKNOWN"),
+            ("Unsupported signature", "UNKNOWN"), ("None", "UNKNOWN"),
+        ]:
+            with self.subTest(authentication=authentication):
+                properties = session("TLS_AES_256_GCM_SHA384", "X25519MLKEM768")
+                properties["cipherSuite"]["authentication"] = authentication
+                cbom = {"components": [{"type": "network-session", "cryptoProperties": properties}]}
+                classified = classify_cbom(cbom)
+                self.assertEqual(classified["components"][0]["risk"], expected)
+                self.assertEqual(classified["classificationSummary"]["sessionRiskCounts"][expected], 1)
+        del properties["cipherSuite"]["authentication"]
+        self.assertEqual(classify_session(properties)["risk"], "SAFE")
 
     def test_classical_and_unknown_evidence(self):
         for suite, group, risk in [

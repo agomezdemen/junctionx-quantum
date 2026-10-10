@@ -81,9 +81,12 @@ def classify_session(properties):
         raise ValueError("Expected structured readable CBOM; run translate_cbom.py first.")
     encryption = primitive_risk(suite.get("encryption", {}), "encryption")
     hashed = primitive_risk(suite.get("hash", {}), "hash")
-    authentication_details = suite.get("authentication", {})
+    authentication_details = suite.get("authentication") or {}
     if isinstance(authentication_details, str):
         authentication_details = {"algorithm": authentication_details}
+    authentication_available = (authentication_details.get("algorithm") or "").strip() not in (
+        "", "Negotiated separately", "Not recorded", "Not determined",
+    )
     authentication = primitive_risk(authentication_details, "authentication")
     exchange_details = suite.get("keyExchange", {})
     if isinstance(exchange_details, str):
@@ -106,13 +109,18 @@ def classify_session(properties):
             part["riskScope"] = "Primitive considered alone; see the combined key-exchange rating."
     findings = {"encryption": encryption, "hash": hashed,
                 "keyExchange": exchange, "authentication": authentication}
+    # Missing authentication remains visible as evidence, but does not set session risk.
+    overall_findings = [encryption, hashed, exchange]
+    if authentication_available:
+        overall_findings.append(authentication)
     return {
-        "risk": combined_risk(findings.values()),
+        "risk": combined_risk(overall_findings),
         "encryptionAndKeyExchangeRisk": combined_risk([encryption, exchange]),
         "findings": findings,
         "missingOrUnsupported": [name for name, item in findings.items() if item["risk"] == "UNKNOWN"],
         "policy": POLICY,
-        "scope": "Quantum risk of reported algorithms; not a complete TLS configuration or certificate audit.",
+        "scope": "Quantum risk of reported algorithms; authentication contributes only when recorded. "
+                 "Not a complete TLS configuration or certificate audit.",
     }
 
 
@@ -142,7 +150,7 @@ def classify_cbom(cbom):
         for purpose in ("encryption", "hash"):
             clean[purpose] = compact_algorithm(suite.get(purpose, {}), findings[purpose])
         for purpose in ("keyExchange", "authentication"):
-            algorithm = suite.get(purpose, "Not recorded")
+            algorithm = suite.get(purpose) or "Not recorded"
             if isinstance(algorithm, dict):
                 algorithm = algorithm.get("algorithm", "Not recorded")
             clean[purpose] = compact_algorithm({"algorithm": algorithm}, findings[purpose])

@@ -121,6 +121,26 @@ td small { display: block; font: 9px ui-monospace, monospace; margin-top: 6px; c
 .risk.critical, .risk.high { background: #fbede7; color: #b5705e; }
 .risk.safe { background: #eaf4eb; color: #5c8762; }
 .risk.medium, .risk.low { background: #faf3e3; color: #a08443; }
+.part-evaluation { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.algorithm-name { font-weight: 550; color: #395942; }
+.assessment-note, td small.assessment-note { font: 10px/1.5 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #73807b; margin: 0; white-space: normal; }
+td .protocol { display: inline-block; margin-top: 8px; }
+td { vertical-align: top; }
+.overall-risk { background: #f3f7f3; border-left: 1px solid var(--border); }
+.overall-risk .risk { font-size: 11px; font-weight: 650; }
+.table-scroll:focus-visible { outline: 2px solid #63aa95; outline-offset: -2px; }
+.evaluation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.evaluation-card { border: 1px solid var(--border); border-radius: 8px; padding: 17px; overflow-wrap: anywhere; }
+.evaluation-card h3 { margin-bottom: 14px; }
+.evaluation-card .algorithm-name { font-size: 13px; }
+.evaluation-card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; line-height: 1.5; margin: 16px 0 0; }
+.hybrid-parts { list-style: none; padding: 12px 0; margin: 15px 0 0; border-top: 1px solid var(--border); }
+.hybrid-parts li { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; margin-bottom: 8px; }
+.hybrid-parts .risk { flex-shrink: 0; }
+.risk-conclusion { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: #f3f7f3; border: 1px solid var(--border); border-radius: 8px; margin-top: 16px; padding: 18px; }
+.risk-conclusion p { color: var(--muted); font-size: 11px; line-height: 1.6; margin-top: 7px; }
+.risk-conclusion > .risk { font-size: 12px; font-weight: 650; flex-shrink: 0; }
+@media (max-width: 520px) { .evaluation-grid { grid-template-columns: 1fr; } .risk-conclusion { align-items: flex-start; flex-direction: column; } }
 .detail-arrow { border: 0; background: none; color: #7d947b; font-size: 17px; padding: 4px; }
 .table-footer { display: flex; justify-content: space-between; gap: 15px; padding: 14px 20px; color: #8c9a88; font-size: 10px; }
 .report-error { background: #fff5ef; padding: 20px; color: #975c44; font-size: 12px; }

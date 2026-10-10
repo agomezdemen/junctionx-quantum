@@ -1,9 +1,10 @@
-import { RISKS, riskOf, parseRepository, filterSessions, formatBytes } from './model.mjs';
+import { RISKS, riskOf, authenticationRecorded, algorithmLabel, parseRepository, filterSessions, formatBytes } from './model.mjs';
 
 const $ = selector => document.querySelector(selector);
 const inputs = [];
 let report = null;
 let detailTrigger;
+const PARTS = [['encryption', 'Encryption'], ['hash', 'Hashing'], ['keyExchange', 'Key exchange'], ['authentication', 'Authentication']];
 
 // Keep the report's shape here when replacing this fixture with an API backed by SQLite.
 async function loadReport() {
@@ -48,6 +49,14 @@ function element(tag, text = '', className = '') {
 function title(value) { return value[0] + value.slice(1).toLowerCase(); }
 function badge(component) { const risk = riskOf(component); return element('span', `● ${title(risk)}`, `risk ${risk.toLowerCase()}`); }
 
+function partEvaluation(purpose, details) {
+  const view = element('div', '', 'part-evaluation');
+  const missingAuthentication = purpose === 'authentication' && !authenticationRecorded(details);
+  view.append(element('span', missingAuthentication ? 'Not recorded' : algorithmLabel(details), 'algorithm-name'), badge(details));
+  if (missingAuthentication) view.append(element('small', 'Excluded from overall risk', 'assessment-note'));
+  return view;
+}
+
 function renderSessions() {
   if (!report) return;
   const sessions = filterSessions(report.components, $('#search').value, $('#risk-filter').value);
@@ -58,18 +67,20 @@ function renderSessions() {
     const name = element('button', component.name || 'Unnamed session', 'session-button');
     name.addEventListener('click', () => showDetails(component, name));
     nameCell.append(name, element('small', `${component.evidence?.client || 'Unknown client'} → ${component.evidence?.server || 'Unknown server'}`));
-    const protocol = element('td');
-    protocol.append(element('span', [crypto.protocol, crypto.negotiatedVersion].filter(Boolean).join(' ') || 'Not recorded', 'protocol'));
-    const encryption = element('td', [crypto.encryption?.algorithm, crypto.encryption?.keySizeBits, crypto.encryption?.mode].filter(Boolean).join(' · ') || 'Not recorded');
-    const exchange = element('td', crypto.keyExchange?.algorithm || 'Not recorded');
-    const risk = element('td');
+    nameCell.append(element('span', [crypto.protocol, crypto.negotiatedVersion].filter(Boolean).join(' ') || 'Not recorded', 'protocol'));
+    const parts = PARTS.map(([purpose]) => {
+      const cell = element('td');
+      cell.append(partEvaluation(purpose, crypto[purpose]));
+      return cell;
+    });
+    const risk = element('td', '', 'overall-risk');
     risk.append(badge(component));
     const action = element('td');
     const button = element('button', '↗', 'detail-arrow');
     button.setAttribute('aria-label', `Inspect ${component.name || 'session'}`);
     button.addEventListener('click', () => showDetails(component, button));
     action.append(button);
-    row.append(nameCell, protocol, encryption, exchange, risk, action);
+    row.append(nameCell, ...parts, risk, action);
     return row;
   }));
   $('#no-results').hidden = sessions.length > 0;
@@ -80,9 +91,37 @@ function showDetails(component, trigger) {
   detailTrigger = trigger;
   $('#detail-title').textContent = component.name || 'Unnamed session';
   const content = $('#session-detail');
-  content.replaceChildren(badge(component));
+  content.replaceChildren();
+  const evaluations = element('div', '', 'evaluation-grid');
+  for (const [purpose, label] of PARTS) {
+    const details = component.cryptoProperties?.[purpose];
+    const card = element('section', '', 'evaluation-card');
+    card.append(element('h3', label), partEvaluation(purpose, details));
+    if (details?.components?.length) {
+      const primitives = element('ul', '', 'hybrid-parts');
+      for (const part of details.components) {
+        const item = element('li');
+        item.append(element('span', algorithmLabel(part)), badge(part));
+        primitives.append(item);
+      }
+      card.append(primitives, element('p', 'Primitive ratings shown separately. The key-exchange rating assesses the combined hybrid.', 'assessment-note'));
+    }
+    // Preserve all recorded parameters without displaying nested components as raw JSON.
+    const parameters = element('dl');
+    for (const [key, value] of Object.entries(details || {})) {
+      if (['algorithm', 'risk', 'components'].includes(key)) continue;
+      parameters.append(element('dt', key.replace(/([A-Z])/g, ' $1')), element('dd', String(value ?? 'Not recorded')));
+    }
+    if (parameters.children.length) card.append(parameters);
+    evaluations.append(card);
+  }
+  const conclusion = element('section', '', 'risk-conclusion');
+  const explanation = element('div');
+  explanation.append(element('h3', 'Overall TLS risk'), element('p', 'Based on encryption, hashing, and key exchange. Authentication contributes only when recorded.'));
+  conclusion.append(explanation, badge(component));
+  content.append(evaluations, conclusion);
   for (const [section, data] of Object.entries({ evidence: component.evidence, ...component.cryptoProperties })) {
-    if (data === undefined) continue;
+    if (data === undefined || PARTS.some(([purpose]) => purpose === section)) continue;
     const block = element('section', '', 'detail-block');
     block.append(element('h3', section.replace(/([A-Z])/g, ' $1')));
     if (data && typeof data === 'object' && !Array.isArray(data)) {

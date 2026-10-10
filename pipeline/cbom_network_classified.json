@@ -433,7 +433,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -624,7 +624,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -954,7 +954,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -1324,7 +1324,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -1562,7 +1562,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -2125,7 +2125,7 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     },
     {
       "type": "network-session",
@@ -2177,15 +2177,15 @@
           "x25519"
         ]
       },
-      "risk": "UNKNOWN"
+      "risk": "SAFE"
     }
   ],
   "classificationSummary": {
     "sessionRiskCounts": {
       "CRITICAL": 51,
       "MEDIUM": 0,
-      "SAFE": 0,
-      "UNKNOWN": 7
+      "SAFE": 7,
+      "UNKNOWN": 0
     },
     "algorithmRiskCounts": {
       "CRITICAL": 84,

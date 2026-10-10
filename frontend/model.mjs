@@ -1,7 +1,15 @@
 export const RISKS = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'SAFE', 'UNKNOWN'];
 
 export function riskOf(component) {
-  return RISKS.includes(component.risk) ? component.risk : 'UNKNOWN';
+  return RISKS.includes(component?.risk) ? component.risk : 'UNKNOWN';
+}
+
+export function authenticationRecorded(details) {
+  return !['', 'Negotiated separately', 'Not recorded', 'Not determined'].includes((details?.algorithm || '').trim());
+}
+
+export function algorithmLabel(details) {
+  return [details?.algorithm, details?.keySizeBits && `${details.keySizeBits}-bit`, details?.mode, details?.curve, details?.parameterSet].filter(Boolean).join(' · ') || 'Not recorded';
 }
 
 export function parseRepository(value) {

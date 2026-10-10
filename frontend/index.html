@@ -31,7 +31,7 @@
           <div class="metrics" aria-label="Report summary">
             <article class="metric"><span>Total sessions</span><strong id="total-count">—</strong><p>Discovered in this report</p><span class="metric-icon" aria-hidden="true">▤</span></article>
             <article class="metric critical-metric"><span>Critical risk</span><strong id="critical-count">—</strong><p>Classified as critical</p><span class="metric-icon" aria-hidden="true">↗</span></article>
-            <article class="metric"><span>Safe sessions</span><strong id="safe-count">—</strong><p>Overall classification: safe</p><span class="metric-icon" aria-hidden="true">✓</span></article>
+            <article class="metric"><span>Safe sessions</span><strong id="safe-count">—</strong><p>Based on observed algorithms</p><span class="metric-icon" aria-hidden="true">✓</span></article>
             <article class="metric"><span>Needs review</span><strong id="unknown-count">—</strong><p>Unknown overall risk</p><span class="metric-icon" aria-hidden="true">?</span></article>
           </div>
         </section>
@@ -50,17 +50,17 @@
           <p id="input-notice" class="notice" role="status" aria-live="polite"></p>
         </section>
         <section id="inventory" aria-labelledby="inventory-title">
-          <div class="section-heading"><div><div class="inline-heading"><h2 id="inventory-title">Cryptographic inventory</h2><span class="sample-label">Sample report</span></div><p>Inspect the protocols and algorithms behind each session.</p></div><button id="export-report" class="button secondary" disabled>Export JSON <span aria-hidden="true">↓</span></button></div>
-          <div class="panel inventory-panel"><div class="inventory-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Search sessions, endpoints, or algorithms" placeholder="Search sessions, endpoints, algorithms…"></label><label class="risk-filter">Risk <select id="risk-filter"><option value="ALL">All levels</option><option value="CRITICAL">Critical</option><option value="HIGH">High</option><option value="MEDIUM">Medium</option><option value="LOW">Low</option><option value="SAFE">Safe</option><option value="UNKNOWN">Unknown</option></select></label></div>
+          <div class="section-heading"><div><div class="inline-heading"><h2 id="inventory-title">Cryptographic inventory</h2><span class="sample-label">Sample report</span></div><p>Compare each algorithm’s risk and the overall TLS assessment.</p></div><button id="export-report" class="button secondary" disabled>Export JSON <span aria-hidden="true">↓</span></button></div>
+          <div class="panel inventory-panel"><div class="inventory-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Search sessions, endpoints, or algorithms" placeholder="Search sessions, endpoints, algorithms…"></label><label class="risk-filter">Overall risk <select id="risk-filter"><option value="ALL">All levels</option><option value="CRITICAL">Critical</option><option value="HIGH">High</option><option value="MEDIUM">Medium</option><option value="LOW">Low</option><option value="SAFE">Safe</option><option value="UNKNOWN">Unknown</option></select></label></div>
             <div id="risk-summary" class="risk-summary" aria-label="Risk distribution"></div>
             <div id="report-error" class="report-error" role="alert" hidden><p id="report-error-message"></p><button id="retry-report" class="button secondary">Retry loading</button></div>
-            <div class="table-scroll"><table><caption class="sr-only">Classified network sessions</caption><thead><tr><th scope="col">Session / endpoint</th><th scope="col">Protocol</th><th scope="col">Encryption</th><th scope="col">Key exchange</th><th scope="col">Risk</th><th scope="col"><span class="sr-only">Details</span></th></tr></thead><tbody id="sessions"></tbody></table></div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Individual algorithm and overall TLS risk assessments"><table><caption class="sr-only">Encryption, hashing, key exchange, authentication, and overall risk for each TLS session</caption><thead><tr><th scope="col">Session / endpoint</th><th scope="col">Encryption</th><th scope="col">Hashing</th><th scope="col">Key exchange</th><th scope="col">Authentication</th><th scope="col" class="overall-risk">Overall TLS risk</th><th scope="col"><span class="sr-only">Details</span></th></tr></thead><tbody id="sessions"></tbody></table></div>
             <p id="no-results" class="queue-empty" hidden>No sessions match these filters. Try another search or risk level.</p><div class="table-footer"><span id="result-count" role="status">Loading sessions…</span><span>Click a session to inspect its evidence <span aria-hidden="true">↗</span></span></div>
           </div>
         </section>
         <footer class="page-footer"><span>QuantumTrace <span class="muted">/ Cryptographic visibility</span></span><span>Source: <code>cbom_network_classified.json</code></span></footer>
       </main>
     </div>
-    <dialog id="session-dialog" aria-labelledby="detail-title"><div class="dialog-heading"><div><p class="eyebrow">SESSION DETAILS</p><h2 id="detail-title"></h2></div><button id="close-dialog" class="button subtle" aria-label="Close session details">✕</button></div><div id="session-detail"></div></dialog>
+    <dialog id="session-dialog" aria-labelledby="detail-title"><div class="dialog-heading"><div><p class="eyebrow">SESSION DETAILS</p><h2 id="detail-title"></h2></div><button id="close-dialog" class="button subtle" aria-label="Close session details">×</button></div><div id="session-detail"></div></dialog>
   </body>
 </html>
