@@ -45,7 +45,7 @@ def add_classification(classification: dict, db_path: str = DB_FILE) -> None:
                 classification.get("line_number"),
                 classification.get("nist_standard"),
                 classification.get("suggestion"),
-                classification.get("codesnippet"),
+                classification.get("code_snippet"),
             ),
         )
         conn.commit()
