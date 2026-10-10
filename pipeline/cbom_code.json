@@ -1,0 +1,186 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "source": "Static Code Cryptographic Inventory (SAST)",
+    "quantumRiskSummary": {
+      "totalFindings": 10,
+      "criticalFindings": 6,
+      "mediumFindings": 4,
+      "safeFindings": 0,
+      "codeQuantumRiskScore": "76.0%"
+    }
+  },
+  "components": [
+    {
+      "type": "application-code",
+      "name": "report_export.py:11",
+      "source": "../input_files/sample-repos/python/report_export.py",
+      "line": 11,
+      "codeSnippet": "cipher = Cipher(algorithms.AES(key), modes.ECB())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "AES"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Cifra sim\u00e9trica padr\u00e3o; requer chaves >= 256 bits para resistir a Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "license_token.py:11",
+      "source": "../input_files/sample-repos/python/license_token.py",
+      "line": 11,
+      "codeSnippet": "return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "Legacy-Hash (SHA1/MD5)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Fun\u00e7\u00e3o de dispers\u00e3o obsoleta com colis\u00f5es cl\u00e1ssicas e suscet\u00edvel a Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "license_token.py:16",
+      "source": "../input_files/sample-repos/python/license_token.py",
+      "line": 16,
+      "codeSnippet": "public_key.verify(signature, message, padding.PKCS1v15(), hashes.SHA1())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "Legacy-Hash (SHA1/MD5)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Fun\u00e7\u00e3o de dispers\u00e3o obsoleta com colis\u00f5es cl\u00e1ssicas e suscet\u00edvel a Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:13",
+      "source": "../input_files/sample-repos/go/invoice-service/main.go",
+      "line": 13,
+      "codeSnippet": "return rsa.GenerateKey(rand.Reader, 1024)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "RSA (crypto/rsa)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Chave assim\u00e9trica RSA em Go vulner\u00e1vel ao Algoritmo de Shor."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:22",
+      "source": "../input_files/sample-repos/go/batch-pipeline/main.go",
+      "line": 22,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Cifra AES em Go; Grover reduz o espa\u00e7o de busca efetivo para metade do tamanho da chave."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:23",
+      "source": "../input_files/sample-repos/go/telemetry-relay/main.go",
+      "line": 23,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Cifra AES em Go; Grover reduz o espa\u00e7o de busca efetivo para metade do tamanho da chave."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:40",
+      "source": "../input_files/sample-repos/go/telemetry-relay/main.go",
+      "line": 40,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Cifra AES em Go; Grover reduz o espa\u00e7o de busca efetivo para metade do tamanho da chave."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "PatchFeed.java:8",
+      "source": "../input_files/sample-repos/java/PatchFeed.java",
+      "line": 8,
+      "codeSnippet": "MessageDigest sha1 = MessageDigest.getInstance(\"SHA-1\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "SHA1/MD5 (Java MessageDigest)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Digest criptogr\u00e1fico fraco e obsoleto."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "CustomerDirectory.java:8",
+      "source": "../input_files/sample-repos/java/CustomerDirectory.java",
+      "line": 8,
+      "codeSnippet": "MessageDigest md5 = MessageDigest.getInstance(\"MD5\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "SHA1/MD5 (Java MessageDigest)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Digest criptogr\u00e1fico fraco e obsoleto."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "ReceiptSigner.java:12",
+      "source": "../input_files/sample-repos/java/ReceiptSigner.java",
+      "line": 12,
+      "codeSnippet": "KeyPairGenerator generator = KeyPairGenerator.getInstance(\"RSA\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "RSA (Java KeyPairGenerator)"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Gera\u00e7\u00e3o de chaves RSA em Java vulner\u00e1vel a Shor."
+      }
+    }
+  ]
+}

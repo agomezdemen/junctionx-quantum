@@ -153,3 +153,8 @@ if __name__ == "__main__":
     # Se passares argumento usa-o, senão tenta o caminho por defeito
     target_pcap = sys.argv[1] if len(sys.argv) > 1 else "network-capture/network.pcap"
     analyze_pcap_to_cbom(target_pcap)
+
+
+    ## nota: THIS SCANNER LOOKS SLIGHTLY DIFFERENT
+    #       the information in the cbum initialy is not readable so we need to run
+    #       a fuction from translate_CBOM  on it.
