@@ -32,7 +32,7 @@ def add_classification(classification: dict, db_path: str = DB_FILE) -> None:
         cursor.execute(
             """
             INSERT INTO qr_classification(source_type, file_path, language, library, primitive, risk, key_size, line_number, nist_standard, suggestion,
-            code_snippet) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+            code_snippet) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
         """,
             (
                 classification.get("source_type"),
