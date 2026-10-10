@@ -22,6 +22,7 @@ def init_db(db_path: str = DB_FILE) -> None:
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS network_session (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,10 +39,8 @@ def init_db(db_path: str = DB_FILE) -> None:
                 authentication_risk TEXT,
                 conclusion TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
-
-
             ) """)
+
         conn.commit()
 
 
