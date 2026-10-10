@@ -1,0 +1,2197 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "sourceFile": "./input_files/network-capture/network.pcap",
+    "totalSessions": 58
+  },
+  "components": [
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.12:443",
+      "evidence": {
+        "client": "192.0.2.10:49153",
+        "server": "192.0.2.12:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.14:443",
+      "evidence": {
+        "client": "192.0.2.10:49155",
+        "server": "192.0.2.14:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.15:443",
+      "evidence": {
+        "client": "192.0.2.10:49156",
+        "server": "192.0.2.15:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.16:443",
+      "evidence": {
+        "client": "192.0.2.10:49157",
+        "server": "192.0.2.16:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.21:443",
+      "evidence": {
+        "client": "192.0.2.10:49162",
+        "server": "192.0.2.21:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.22:443",
+      "evidence": {
+        "client": "192.0.2.10:49163",
+        "server": "192.0.2.22:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.24:443",
+      "evidence": {
+        "client": "192.0.2.10:49165",
+        "server": "192.0.2.24:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.28:443",
+      "evidence": {
+        "client": "192.0.2.10:49169",
+        "server": "192.0.2.28:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.30:443",
+      "evidence": {
+        "client": "192.0.2.10:49171",
+        "server": "192.0.2.30:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.31:443",
+      "evidence": {
+        "client": "192.0.2.10:49172",
+        "server": "192.0.2.31:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.34:443",
+      "evidence": {
+        "client": "192.0.2.10:49175",
+        "server": "192.0.2.34:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.37:443",
+      "evidence": {
+        "client": "192.0.2.10:49178",
+        "server": "192.0.2.37:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.38:443",
+      "evidence": {
+        "client": "192.0.2.10:49179",
+        "server": "192.0.2.38:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.41:443",
+      "evidence": {
+        "client": "192.0.2.10:49182",
+        "server": "192.0.2.41:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.42:443",
+      "evidence": {
+        "client": "192.0.2.10:49183",
+        "server": "192.0.2.42:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.44:443",
+      "evidence": {
+        "client": "192.0.2.10:49185",
+        "server": "192.0.2.44:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.47:443",
+      "evidence": {
+        "client": "192.0.2.10:49188",
+        "server": "192.0.2.47:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.48:443",
+      "evidence": {
+        "client": "192.0.2.10:49189",
+        "server": "192.0.2.48:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.52:443",
+      "evidence": {
+        "client": "192.0.2.10:49193",
+        "server": "192.0.2.52:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.54:443",
+      "evidence": {
+        "client": "192.0.2.10:49194",
+        "server": "192.0.2.54:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.55:443",
+      "evidence": {
+        "client": "192.0.2.10:49195",
+        "server": "192.0.2.55:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.56:443",
+      "evidence": {
+        "client": "192.0.2.10:49196",
+        "server": "192.0.2.56:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.58:443",
+      "evidence": {
+        "client": "192.0.2.10:49198",
+        "server": "192.0.2.58:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.62:443",
+      "evidence": {
+        "client": "192.0.2.10:49202",
+        "server": "192.0.2.62:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.65:443",
+      "evidence": {
+        "client": "192.0.2.10:49205",
+        "server": "192.0.2.65:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.68:443",
+      "evidence": {
+        "client": "192.0.2.10:49208",
+        "server": "192.0.2.68:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.72:443",
+      "evidence": {
+        "client": "192.0.2.10:49212",
+        "server": "192.0.2.72:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.75:443",
+      "evidence": {
+        "client": "192.0.2.10:49215",
+        "server": "192.0.2.75:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.76:443",
+      "evidence": {
+        "client": "192.0.2.10:49216",
+        "server": "192.0.2.76:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.77:443",
+      "evidence": {
+        "client": "192.0.2.10:49217",
+        "server": "192.0.2.77:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.78:443",
+      "evidence": {
+        "client": "192.0.2.10:49218",
+        "server": "192.0.2.78:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.83:443",
+      "evidence": {
+        "client": "192.0.2.10:49223",
+        "server": "192.0.2.83:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.84:443",
+      "evidence": {
+        "client": "192.0.2.10:49224",
+        "server": "192.0.2.84:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.95:443",
+      "evidence": {
+        "client": "192.0.2.10:49235",
+        "server": "192.0.2.95:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.97:443",
+      "evidence": {
+        "client": "192.0.2.10:49237",
+        "server": "192.0.2.97:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.98:443",
+      "evidence": {
+        "client": "192.0.2.10:49238",
+        "server": "192.0.2.98:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.99:443",
+      "evidence": {
+        "client": "192.0.2.10:49239",
+        "server": "192.0.2.99:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.100:443",
+      "evidence": {
+        "client": "192.0.2.10:49240",
+        "server": "192.0.2.100:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.101:443",
+      "evidence": {
+        "client": "192.0.2.10:49241",
+        "server": "192.0.2.101:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.102:443",
+      "evidence": {
+        "client": "192.0.2.10:49242",
+        "server": "192.0.2.102:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.107:443",
+      "evidence": {
+        "client": "192.0.2.10:49247",
+        "server": "192.0.2.107:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.108:443",
+      "evidence": {
+        "client": "192.0.2.10:49248",
+        "server": "192.0.2.108:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.110:443",
+      "evidence": {
+        "client": "192.0.2.10:49250",
+        "server": "192.0.2.110:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.113:443",
+      "evidence": {
+        "client": "192.0.2.10:49253",
+        "server": "192.0.2.113:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.114:443",
+      "evidence": {
+        "client": "192.0.2.10:49254",
+        "server": "192.0.2.114:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.116:443",
+      "evidence": {
+        "client": "192.0.2.10:49256",
+        "server": "192.0.2.116:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.120:443",
+      "evidence": {
+        "client": "192.0.2.10:49260",
+        "server": "192.0.2.120:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.122:443",
+      "evidence": {
+        "client": "192.0.2.10:49262",
+        "server": "192.0.2.122:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.123:443",
+      "evidence": {
+        "client": "192.0.2.10:49263",
+        "server": "192.0.2.123:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.124:443",
+      "evidence": {
+        "client": "192.0.2.10:49264",
+        "server": "192.0.2.124:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.125:443",
+      "evidence": {
+        "client": "192.0.2.10:49265",
+        "server": "192.0.2.125:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.127:443",
+      "evidence": {
+        "client": "192.0.2.10:49267",
+        "server": "192.0.2.127:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-256",
+          "risk": "SAFE",
+          "outputBits": 256,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "ECDH",
+          "risk": "CRITICAL",
+          "curve": "X25519",
+          "curveBits": 255
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "x25519",
+          "secp256r1"
+        ]
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.133:443",
+      "evidence": {
+        "client": "192.0.2.10:49273",
+        "server": "192.0.2.133:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.135:443",
+      "evidence": {
+        "client": "192.0.2.10:49275",
+        "server": "192.0.2.135:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.137:443",
+      "evidence": {
+        "client": "192.0.2.10:49277",
+        "server": "192.0.2.137:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.138:443",
+      "evidence": {
+        "client": "192.0.2.10:49278",
+        "server": "192.0.2.138:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "MEDIUM",
+          "keySizeBits": 128,
+          "mode": "CBC"
+        },
+        "hash": {
+          "algorithm": "SHA-1",
+          "risk": "MEDIUM",
+          "outputBits": 160,
+          "role": "HMAC hash"
+        },
+        "keyExchange": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        },
+        "authentication": {
+          "algorithm": "RSA",
+          "risk": "CRITICAL"
+        }
+      },
+      "risk": "CRITICAL"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.139:443",
+      "evidence": {
+        "client": "192.0.2.10:49279",
+        "server": "192.0.2.139:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    },
+    {
+      "type": "network-session",
+      "name": "TLS-Session-192.0.2.143:443",
+      "evidence": {
+        "client": "192.0.2.10:49283",
+        "server": "192.0.2.143:443"
+      },
+      "cryptoProperties": {
+        "protocol": "TLS",
+        "negotiatedVersion": null,
+        "encryption": {
+          "algorithm": "AES",
+          "risk": "SAFE",
+          "keySizeBits": 256,
+          "mode": "GCM",
+          "authenticationTagBits": 128
+        },
+        "hash": {
+          "algorithm": "SHA-384",
+          "risk": "SAFE",
+          "outputBits": 384,
+          "role": "HKDF and transcript hash"
+        },
+        "keyExchange": {
+          "algorithm": "Hybrid key exchange",
+          "risk": "SAFE",
+          "components": [
+            {
+              "algorithm": "ECDH",
+              "risk": "CRITICAL",
+              "curve": "X25519",
+              "curveBits": 255
+            },
+            {
+              "algorithm": "ML-KEM",
+              "risk": "SAFE",
+              "parameterSet": "768",
+              "nistSecurityLevel": 3
+            }
+          ]
+        },
+        "authentication": {
+          "algorithm": "Not recorded",
+          "risk": "UNKNOWN"
+        },
+        "offeredGroups": [
+          "X25519MLKEM768",
+          "x25519"
+        ]
+      },
+      "risk": "UNKNOWN"
+    }
+  ],
+  "classificationSummary": {
+    "sessionRiskCounts": {
+      "CRITICAL": 51,
+      "MEDIUM": 0,
+      "SAFE": 0,
+      "UNKNOWN": 7
+    },
+    "algorithmRiskCounts": {
+      "CRITICAL": 84,
+      "MEDIUM": 84,
+      "SAFE": 39,
+      "UNKNOWN": 25
+    }
+  }
+}
