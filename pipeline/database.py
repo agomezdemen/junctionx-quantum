@@ -41,6 +41,17 @@ def init_db(db_path: str = DB_FILE) -> None:
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) """)
 
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS cloud_infrastructure (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                resource_type TEXT,       
+                provider TEXT,
+                encryption_algorithm TEXT,
+                key_management TEXT,       
+                risk_level TEXT,          
+                conclusion TEXT           
+            ) """)
+
         conn.commit()
 
 
@@ -69,7 +80,6 @@ def add_code_classification(classification: dict, db_path: str = DB_FILE) -> Non
 
 
 def add_network_session(session: dict, db_path: str = DB_FILE) -> None:
-    """Inserts a parsed network session into the database."""
     with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -96,6 +106,28 @@ def add_network_session(session: dict, db_path: str = DB_FILE) -> None:
                 session.get("authentication_algorithm"),
                 session.get("authentication_risk"),
                 session.get("conclusion"),
+            ),
+        )
+        conn.commit()
+
+
+def add_cloud_component(data: dict, db_path: str = DB_FILE) -> None:
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+                INSERT INTO cloud_infrastructure (
+                resource_type, provider, encryption_algorithm, 
+                key_management, risk_level, conclusion
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                data.get("resource_type"),
+                data.get("provider"),
+                data.get("encryption_algorithm"),
+                data.get("key_management"),
+                data.get("risk_level"),
+                data.get("conclusion"),
             ),
         )
         conn.commit()

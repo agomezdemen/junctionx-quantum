@@ -1,4 +1,4 @@
-from database import add_network_session, init_db
+from database import add_network_session, init_db, add_cloud_component
 
 
 def load_network_session(cbom: dict):
@@ -33,3 +33,37 @@ def load_network_session(cbom: dict):
         add_network_session(session_data)
 
     print("Successfully loaded sessions into the database!")
+
+
+def laod_cloud_infrastructure(cbom: dict):
+    init_db()
+
+    for component in cbom.get("components", []):
+        if component.get("type") != "network-session":
+            continue
+
+        props = component.get("cryptoProperties", {})
+        assessment = component.get("quantumRiskAssessment", {})
+
+        algorithm = (
+            props.get("keySpec")
+            or props.get("keyAlgorithm")
+            or props.get("sslPolicy")
+            or "Unknown"
+        )
+
+        arn = component.get("arn", "")
+        provider = "AWS" if "arn:aws" in arn else "Unknow Provider"
+
+        component_data = {
+            "resource_type": f"{component.get('type', 'resource')} ({component.get('name', 'unnamed')})",
+            "provider": provider,
+            "encryption_algorithm": algorithm,
+            "key_management": props.get("origin") or props.get("type", "Unknown"),
+            "risk_level": assessment.get("tier", "UNKNOWN").upper(),
+            "conclusion": assessment.get("reason", "No assessment provided."),
+        }
+
+        add_cloud_component(component_data)
+
+        print("Sucessfully loaded sessions into the database!")
