@@ -1,0 +1,164 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "source": "AWS Cloud Posture Audit",
+    "quantumRiskSummary": {
+      "totalAssets": 8,
+      "criticalAssets": 6,
+      "mediumAssets": 1,
+      "safeAssets": 1,
+      "quantumRiskScore": "80.0%"
+    }
+  },
+  "components": [
+    {
+      "type": "cloud-kms-key",
+      "name": "alias/demo-legacy-signing",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/kms_key_inventory.json",
+      "arn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000001",
+      "cryptoProperties": {
+        "assetType": "key",
+        "keySpec": "RSA_2048",
+        "keyUsage": "SIGN_VERIFY",
+        "keyRotationEnabled": false,
+        "origin": "AWS_KMS"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Classical asymmetric primitive (RSA_2048) fully vulnerable to factorization or discrete logarithm via Shor's Algorithm."
+      }
+    },
+    {
+      "type": "cloud-kms-key",
+      "name": "alias/demo-device-signing",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/kms_key_inventory.json",
+      "arn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000002",
+      "cryptoProperties": {
+        "assetType": "key",
+        "keySpec": "ECC_NIST_P256",
+        "keyUsage": "SIGN_VERIFY",
+        "keyRotationEnabled": false,
+        "origin": "AWS_KMS"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Classical asymmetric primitive (ECC_NIST_P256) fully vulnerable to factorization or discrete logarithm via Shor's Algorithm."
+      }
+    },
+    {
+      "type": "cloud-kms-key",
+      "name": "alias/demo-symmetric-storage",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/kms_key_inventory.json",
+      "arn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000003",
+      "cryptoProperties": {
+        "assetType": "key",
+        "keySpec": "SYMMETRIC_DEFAULT",
+        "keyUsage": "ENCRYPT_DECRYPT",
+        "keyRotationEnabled": true,
+        "origin": "AWS_KMS"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Safe",
+        "threat": "None",
+        "reason": "256-bit symmetric key (AES-256-GCM). Grover reduces effective security to 128 bits, remaining safe."
+      }
+    },
+    {
+      "type": "cloud-kms-key",
+      "name": "alias/demo-missing-key-spec",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/kms_key_inventory.json",
+      "arn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000004",
+      "cryptoProperties": {
+        "assetType": "key",
+        "keySpec": "UNKNOWN",
+        "keyUsage": "ENCRYPT_DECRYPT",
+        "keyRotationEnabled": false,
+        "origin": "AWS_KMS"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover / Inconclusive",
+        "reason": "Configuration requires further analysis: UNKNOWN"
+      }
+    },
+    {
+      "type": "x509-certificate",
+      "name": "legacy.example.test",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/acm_certificates.json",
+      "arn": "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000001",
+      "cryptoProperties": {
+        "assetType": "certificate",
+        "keyAlgorithm": "RSA_2048",
+        "signatureAlgorithm": "SHA256WITHRSA",
+        "type": "IMPORTED",
+        "status": "ISSUED"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Classical asymmetric primitive (RSA_2048) fully vulnerable to factorization or discrete logarithm via Shor's Algorithm."
+      }
+    },
+    {
+      "type": "x509-certificate",
+      "name": "portal.example.test",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/acm_certificates.json",
+      "arn": "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000002",
+      "cryptoProperties": {
+        "assetType": "certificate",
+        "keyAlgorithm": "EC_prime256v1",
+        "signatureAlgorithm": "ECDSA_WITH_SHA256",
+        "type": "IMPORTED",
+        "status": "ISSUED"
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Classical asymmetric primitive (EC_PRIME256V1) fully vulnerable to factorization or discrete logarithm via Shor's Algorithm."
+      }
+    },
+    {
+      "type": "load-balancer-listener",
+      "name": "demo-edge:443",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/load_balancer_listeners.json",
+      "arn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/demo/0000000000000001/0000000000000001",
+      "cryptoProperties": {
+        "assetType": "protocol-policy",
+        "protocol": "HTTPS",
+        "port": 443,
+        "sslPolicy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
+        "associatedCertificates": [
+          "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000001"
+        ]
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Policy supports TLS 1.3 but uses classical AWS ECDHE curves without PQC hybrid groups (vulnerable to Harvest Now, Decrypt Later)."
+      }
+    },
+    {
+      "type": "load-balancer-listener",
+      "name": "demo-edge:8443",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/cloud/load_balancer_listeners.json",
+      "arn": "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/demo/0000000000000001/0000000000000002",
+      "cryptoProperties": {
+        "assetType": "protocol-policy",
+        "protocol": "HTTPS",
+        "port": 8443,
+        "sslPolicy": "ELBSecurityPolicy-2016-08",
+        "associatedCertificates": [
+          "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000001"
+        ]
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor / Legacy",
+        "reason": "Legacy TLS policy with obsolete ciphers and classical static/ECDHE key exchange vulnerable to Shor."
+      }
+    }
+  ]
+}

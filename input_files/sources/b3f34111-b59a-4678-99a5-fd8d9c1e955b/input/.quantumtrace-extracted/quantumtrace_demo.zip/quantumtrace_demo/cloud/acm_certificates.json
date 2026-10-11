@@ -1,0 +1,23 @@
+{
+  "Account": "123456789012",
+  "Region": "eu-west-1",
+  "Synthetic": true,
+  "Certificates": [
+    {
+      "CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000001",
+      "DomainName": "legacy.example.test",
+      "KeyAlgorithm": "RSA_2048",
+      "SignatureAlgorithm": "SHA256WITHRSA",
+      "Type": "IMPORTED",
+      "Status": "ISSUED"
+    },
+    {
+      "CertificateArn": "arn:aws:acm:eu-west-1:123456789012:certificate/00000000-0000-4000-8000-000000000002",
+      "DomainName": "portal.example.test",
+      "KeyAlgorithm": "EC_prime256v1",
+      "SignatureAlgorithm": "ECDSA_WITH_SHA256",
+      "Type": "IMPORTED",
+      "Status": "ISSUED"
+    }
+  ]
+}

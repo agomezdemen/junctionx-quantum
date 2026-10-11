@@ -1,0 +1,9 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "sourceFile": "/home/bean/coding/junctionx-quantum/input_files/sources/b3f34111-b59a-4678-99a5-fd8d9c1e955b/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/network/non_tls.pcap",
+    "totalSessions": 0
+  },
+  "components": []
+}
