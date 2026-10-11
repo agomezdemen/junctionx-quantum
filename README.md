@@ -1,5 +1,7 @@
 # QuantumTrace project
 
+[Watch the video on YouTube](https://youtu.be/FoSCUCO0r4U).
+
 ## Frontend
 
 From the repository root, install the existing scanner dependencies and run the local API/frontend server (no frontend build step):
