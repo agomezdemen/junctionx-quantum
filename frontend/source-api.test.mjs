@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { analyzeSource } from './source-api.mjs';
+import { analyzeSource, listSources } from './source-api.mjs';
 
 const originalFetch = globalThis.fetch;
 try {
@@ -59,6 +59,44 @@ try {
   await analyzeSource(pending, () => {});
   assert.equal(pending.status, 'ready');
   assert.equal(repository.reports.code.components.length, 1, 'Other sources retain their own reports');
+
+  // Reload restores server identities; saved file metadata must never be uploaded again.
+  const saved = [
+    { id: 'sample', name: 'Sample workspace', kind: 'sample', status: 'ready' },
+    { id: 'saved-files', name: 'a.py', kind: 'files', files: [{ name: 'a.py', size: 4 }], status: 'ready' },
+    { id: 'saved-failed', name: 'team/project', kind: 'repository', status: 'failed', url: repository.url },
+  ];
+  globalThis.fetch = async url => {
+    assert.equal(url, '/api/sources');
+    return Response.json({ sources: saved });
+  };
+  const restored = await listSources();
+  assert.deepEqual(restored.map(source => source.serverId), saved.map(source => source.id));
+  globalThis.fetch = async (url, options) => {
+    assert.equal(options.method, 'GET');
+    const id = url.split('/').at(-1);
+    return Response.json({ id, status: id === 'saved-failed' ? 'failed' : 'ready', reports, error: 'Scanner interrupted' });
+  };
+  await Promise.all(restored.map(source => analyzeSource(source, () => {})));
+  assert.deepEqual(restored.map(source => source.status), ['ready', 'ready', 'error']);
+  assert.deepEqual(restored[1].reports, reports);
+  assert.equal(restored[2].message, 'Scanner interrupted');
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, '/api/sources/saved-failed/retry');
+    assert.equal(options.method, 'POST');
+    return Response.json({ id: 'saved-failed', status: 'ready', reports: {} });
+  };
+  await analyzeSource(restored[2], () => {}, { retry: true });
+  assert.equal(restored[2].status, 'ready');
+  assert.deepEqual(restored[2].reports, {}, 'Missing categories never fall back to sample results');
+
+  globalThis.fetch = async () => Response.json({ error: 'Upload exceeds the limit.' }, { status: 413 });
+  await analyzeSource(files, () => {});
+  assert.equal(files.message, 'Upload exceeds the limit.');
+  globalThis.fetch = async () => Response.json({ sources: [{ id: 'broken' }] });
+  await assert.rejects(listSources(), /invalid source list/);
+  globalThis.fetch = async () => new Response('', { status: 501 });
+  await assert.rejects(listSources(), /backend is not connected/);
   console.log('Source API checks passed: immediate submission, multipart files, backend errors, source identity, cancellation, and polling recovery.');
 } finally {
   globalThis.fetch = originalFetch;

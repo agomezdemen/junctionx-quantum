@@ -130,9 +130,9 @@ def classification_columns(kind, component):
         return values
     if kind == "code":
         return {"file_path": component.get("source") or "Not recorded", "language": props.get("language") or "Unknown",
-                "library": props.get("library") or "Not recorded", "primitive": props.get("detectedAlgorithm") or "Unknown",
-                "risk": assessment.get("tier") or "UNKNOWN", "key_size": props.get("keySizeBits"), "line_number": component.get("line"),
-                "nist_standard": assessment.get("nistStandard"), "suggestion": assessment.get("suggestion"), "code_snippet": component.get("codeSnippet")}
+                "primitive": props.get("detectedAlgorithm") or "Unknown",
+                "risk": assessment.get("tier") or "UNKNOWN", "key_size": props.get("keySizeBits", props.get("keySize")), "line_number": component.get("line"),
+                "suggestion": assessment.get("suggestion") or assessment.get("reason"), "code_snippet": component.get("codeSnippet")}
     return {"asset_type": component.get("type"), "name": component.get("name"), "risk": assessment.get("tier")}
 
 
@@ -146,6 +146,6 @@ def legacy_component(kind, row):
     if kind == "code":
         return {"type": "application-code", "name": f"{row['file_path']}:{row['line_number']}", "source": row["file_path"],
                 "line": row["line_number"], "codeSnippet": row["code_snippet"],
-                "cryptoProperties": {"language": row["language"], "library": row["library"], "detectedAlgorithm": row["primitive"], "keySizeBits": row["key_size"]},
-                "quantumRiskAssessment": {"tier": row["risk"], "suggestion": row["suggestion"], "nistStandard": row["nist_standard"]}}
+                "cryptoProperties": {"language": row["language"], "detectedAlgorithm": row["primitive"], "keySize": row["key_size"]},
+                "quantumRiskAssessment": {"tier": row["risk"], "reason": row["suggestion"]}}
     return {"type": row["asset_type"], "name": row["name"], "quantumRiskAssessment": {"tier": row["risk"]}}

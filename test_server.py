@@ -35,8 +35,16 @@ class PersistenceTest(unittest.TestCase):
             store.save_reports('test', {'network': report})
             store.save_reports('test', {'network': report})
             self.assertEqual(store.get('test')['reports']['network'], report)
+            code = json.loads((ROOT / 'pipeline/cbom_code.json').read_text())
+            store.create({'id': 'code', 'name': 'Code repository', 'kind': 'repository', 'url': 'https://github.com/team/code.git'})
+            store.save_reports('code', {'code': code})
+            reopened = SourceStore(db)
+            self.assertEqual(reopened.get('code')['reports'], {'code': code})
+            self.assertEqual({source['id'] for source in reopened.list()}, {'legacy', 'test', 'code'})
             with closing(sqlite3.connect(db)) as conn:
                 self.assertEqual(conn.execute("SELECT count(*) FROM network_session WHERE source_id='test'").fetchone()[0], len(report['components']))
+                self.assertEqual(conn.execute("SELECT key_size, suggestion FROM code_classification WHERE source_id='code' ORDER BY id LIMIT 1").fetchone(),
+                                 (code['components'][0]['cryptoProperties']['keySize'], code['components'][0]['quantumRiskAssessment']['reason']))
             store.delete('test')
             self.assertEqual(store.get('legacy')['reports'], legacy)
 

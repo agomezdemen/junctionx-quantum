@@ -1,8 +1,9 @@
 import { RISKS, riskOf, authenticationRecorded, algorithmLabel, parseRepository, filterSessions, formatBytes, reportEntries, riskDistribution, algorithmCounts } from './model.mjs';
-import { analyzeSource } from './source-api.mjs';
+import { analyzeSource, listSources } from './source-api.mjs';
 
 const $ = selector => document.querySelector(selector);
-const sources = [{ id: 'sample', name: 'Sample workspace', kind: 'sample', status: 'ready', message: 'Example results from the supplied reports.' }];
+const sources = [{ id: 'sample', serverId: 'sample', name: 'Sample workspace', kind: 'sample', status: 'processing', message: 'Loading saved sources…' }];
+let sourcesLoaded = false;
 let selectedSourceId = 'sample';
 const activeSource = () => sources.find(source => source.id === selectedSourceId);
 let report = null;
@@ -23,17 +24,8 @@ let chartRequest = 0;
 const RISK_COLORS = Object.fromEntries(RISKS.map(risk => [risk, `var(--risk-${risk.toLowerCase()})`]));
 
 async function readReport(file, source = activeSource()) {
-  if (source.kind !== 'sample') {
-    const kind = Object.keys(REPORTS).find(kind => REPORTS[kind].file === file);
-    return source.reports?.[kind] || { metadata: { source: source.name }, components: [] };
-  }
-  const response = await fetch(`../pipeline/${file}`);
-  if (!response.ok) throw new Error(`Report request failed (${response.status}).`);
-  const data = await response.json();
-  if (!Array.isArray(data?.components) || data.components.some(c => !c || typeof c !== 'object' || Array.isArray(c))) {
-    throw new Error('The report does not contain a valid components list.');
-  }
-  return data;
+  const kind = Object.keys(REPORTS).find(kind => REPORTS[kind].file === file);
+  return source.reports?.[kind] || { metadata: { source: source.name }, components: [] };
 }
 
 async function loadChartReports() {
@@ -208,9 +200,9 @@ async function loadReport() {
     chartReports.delete(reportKind);
     chartErrors.set(reportKind, error.message);
     renderCharts();
-    $('#dataset-status').textContent = 'Sample report unavailable';
+    $('#dataset-status').textContent = 'Source report unavailable';
     $('#report-error').hidden = false;
-    $('#report-error-message').textContent = `${error.message} Could not load ${config.file}. Serve the repository root and check that this report exists. Other report views remain available.`;
+    $('#report-error-message').textContent = `${error.message} Could not load ${config.file}. Retry the source connection.`;
     $('#result-count').textContent = 'Report unavailable';
   } finally {
     if (request === reportRequest) {
@@ -386,6 +378,8 @@ function notice(message) { $('#input-notice').textContent = message; }
 
 function renderSources() {
   const current = activeSource();
+  $('#file-input').disabled = !sourcesLoaded;
+  $('#repo-form button[type="submit"]').disabled = !sourcesLoaded;
   const labels = { ready: 'Ready', processing: 'Analyzing', error: 'Needs attention' };
   $('#workspace-source').replaceChildren(...sources.map(source => new Option(`${source.name} · ${labels[source.status]}`, source.id)));
   $('#workspace-source').value = selectedSourceId;
@@ -393,14 +387,15 @@ function renderSources() {
   $('#source-status').dataset.state = current.status;
   $('#remove-source').disabled = current.kind === 'sample';
   $('#retry-source').hidden = current.status !== 'error';
+  $('#retry-source').textContent = current.analysisFailed ? 'Retry analysis' : 'Retry connection';
   for (const label of document.querySelectorAll('[data-report-origin]')) label.textContent = current.kind === 'sample' ? 'Sample report' : 'Source analysis';
-  $('#added-source-count').textContent = sources.length - 1;
+  $('#added-source-count').textContent = sources.filter(source => source.kind !== 'sample').length;
   $('#source-list').replaceChildren(...sources.filter(source => source.kind !== 'sample').map(source => {
     const item = element('li');
     const button = element('button', '', 'source-choice');
     button.setAttribute('aria-pressed', String(source.id === selectedSourceId));
     const description = element('span', source.name);
-    description.append(element('small', source.kind === 'repository' ? `${source.provider} · ${source.url}` : `${source.files.length} files · ${formatBytes(source.files.reduce((size, file) => size + file.size, 0))}`));
+    description.append(element('small', source.kind === 'repository' ? source.url : source.kind === 'database' ? 'Previously stored analysis' : `${source.files.length} files · ${formatBytes(source.files.reduce((size, file) => size + file.size, 0))}`));
     button.append(description, element('span', labels[source.status], `source-state ${source.status}`));
     button.addEventListener('click', () => {
       selectSource(source.id);
@@ -429,15 +424,41 @@ function selectSource(id) {
   refreshScope();
 }
 
-function startAnalysis(source) {
-  analyzeSource(source, () => {
+function startAnalysis(source, retry = false) {
+  return analyzeSource(source, () => {
     if (!sources.includes(source)) return;
     renderSources();
     if (source === activeSource()) refreshScope();
-  });
+  }, { retry });
+}
+
+async function loadWorkspace() {
+  $('#retry-sources').hidden = true;
+  Object.assign(activeSource(), { status: 'processing', message: 'Loading saved sources…' });
+  renderSources();
+  refreshScope();
+  notice('Loading saved sources…');
+  try {
+    const saved = await listSources();
+    if (!saved.some(source => source.id === 'sample')) throw new Error('The source list is missing the sample workspace. Check the server and retry.');
+    sources.splice(0, sources.length, ...saved);
+    sourcesLoaded = true;
+    notice('Saved sources restored. Select a source to view its analysis.');
+    renderSources();
+    for (const source of sources) startAnalysis(source);
+  } catch (error) {
+    const source = activeSource();
+    source.status = 'error';
+    source.message = error.message;
+    notice(`Could not load saved sources. ${error.message}`);
+    $('#retry-sources').hidden = false;
+    renderSources();
+    refreshScope();
+  }
 }
 
 function addFiles(fileList) {
+  if (!sourcesLoaded) { notice('Connect to the server before adding files.'); return; }
   const files = [...new Map([...fileList].map(file => [`${file.name}:${file.size}:${file.lastModified}`, file])).values()];
   if (!files.length) { notice('No files were added. Drop files or choose Browse files.'); return; }
   const fingerprint = files.map(file => `${file.name}:${file.size}:${file.lastModified}`).sort().join('|');
@@ -472,6 +493,7 @@ for (const type of ['dragover', 'drop']) document.addEventListener(type, event =
 
 $('#repo-form').addEventListener('submit', event => {
   event.preventDefault();
+  if (!sourcesLoaded) return;
   const field = $('#repo-url');
   try {
     const repo = parseRepository(field.value);
@@ -491,14 +513,15 @@ $('#repo-form').addEventListener('submit', event => {
 });
 $('#repo-url').addEventListener('input', () => { $('#repo-error').textContent = ''; $('#repo-url').removeAttribute('aria-invalid'); });
 $('#workspace-source').addEventListener('change', event => selectSource(event.target.value));
-$('#retry-source').addEventListener('click', () => startAnalysis(activeSource()));
+$('#retry-source').addEventListener('click', () => sourcesLoaded ? startAnalysis(activeSource(), true) : loadWorkspace());
+$('#retry-sources').addEventListener('click', loadWorkspace);
 $('#remove-source').addEventListener('click', () => {
   const source = activeSource();
   if (source.kind === 'sample') return;
   source.controller?.abort();
   sources.splice(sources.indexOf(source), 1);
   selectSource('sample');
-  notice(`${source.name} removed from this tab. Server results and files were not deleted.`);
+  notice(`${source.name} removed from this tab. Saved results will return on reload.`);
 });
 $('#search').addEventListener('input', renderSessions);
 $('#risk-filter').addEventListener('change', renderSessions);
@@ -555,3 +578,4 @@ $('.skip-link').addEventListener('click', event => {
 showPage();
 renderSources();
 refreshScope();
+loadWorkspace();
