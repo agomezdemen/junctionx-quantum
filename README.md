@@ -1,4 +1,4 @@
-# qqqq project
+# QuantumTrace project
 
 ## Frontend
 
