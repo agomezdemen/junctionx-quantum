@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { analyzeSource, listSources } from './source-api.mjs';
+import { analyzeSource, listSources, exportSourceCbom } from './source-api.mjs';
 import { prepareFiles } from './file-input.mjs';
 
 const originalFetch = globalThis.fetch;
@@ -121,6 +121,14 @@ try {
   await assert.rejects(listSources(), /invalid source list/);
   globalThis.fetch = async () => new Response('', { status: 501 });
   await assert.rejects(listSources(), /backend is not connected/);
+  globalThis.fetch = async url => {
+    assert.equal(url, '/api/sources/saved-files/cbom');
+    return Response.json({ bomFormat: 'CycloneDX', specVersion: '1.7', components: [] });
+  };
+  assert.equal((await exportSourceCbom('saved-files')).bomFormat, 'CycloneDX');
+  await assert.rejects(exportSourceCbom(undefined), /not been saved/);
+  globalThis.fetch = async () => Response.json({ error: 'Analysis is still running.' }, { status: 409 });
+  await assert.rejects(exportSourceCbom('saved-files'), /Analysis is still running/);
   console.log('Source API checks passed: immediate submission, multipart files and folder paths, backend errors, source identity, cancellation, and polling recovery.');
 } finally {
   globalThis.fetch = originalFetch;

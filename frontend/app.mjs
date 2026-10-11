@@ -1,5 +1,5 @@
 import { RISKS, riskOf, authenticationRecorded, algorithmLabel, parseRepository, filterSessions, formatBytes, reportEntries, riskDistribution, algorithmCounts } from './model.mjs';
-import { analyzeSource, listSources } from './source-api.mjs';
+import { analyzeSource, listSources, exportSourceCbom } from './source-api.mjs';
 import { droppedFiles, prepareFiles, uploadPath } from './file-input.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -550,13 +550,22 @@ $('#close-dialog').addEventListener('click', () => $('#session-dialog').close())
 $('#session-dialog').addEventListener('close', () => {
   if (detailTrigger?.checkVisibility()) detailTrigger.focus();
 });
-$('#export-report').addEventListener('click', () => {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }));
-  const link = element('a');
-  link.href = url;
-  link.download = activeSource().kind === 'sample' ? REPORTS[reportKind].file : `${activeSource().name.replace(/[^\w.-]+/g, '-')}-${REPORTS[reportKind].file}`;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+$('#export-report').addEventListener('click', async () => {
+  const source = activeSource();
+  $('#export-report').disabled = true;
+  try {
+    const cbom = await exportSourceCbom(source.serverId);
+    const url = URL.createObjectURL(new Blob([JSON.stringify(cbom, null, 2) + '\n'], { type: 'application/vnd.cyclonedx+json' }));
+    const link = element('a');
+    link.href = url;
+    link.download = `${source.name.replace(/[^\w.-]+/g, '-')}-cbom.cdx.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) {
+    if (source === activeSource()) $('#source-status').textContent = `Export failed: ${error.message}`;
+  } finally {
+    $('#export-report').disabled = activeSource().status !== 'ready';
+  }
 });
 
 const pages = { inputs: 'Input sources', analysis: 'Risk analysis', about: 'Why QuantumTrace', team: 'About us' };

@@ -24,6 +24,11 @@ export async function listSources() {
   }));
 }
 
+export async function exportSourceCbom(sourceId) {
+  if (typeof sourceId !== 'string' || !sourceId) throw new Error('This source has not been saved yet.');
+  return sourceResponse(await fetch(`/api/sources/${encodeURIComponent(sourceId)}/cbom`));
+}
+
 export async function analyzeSource(source, onUpdate, { retry = false } = {}) {
   source.controller?.abort();
   const controller = new AbortController();

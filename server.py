@@ -20,6 +20,7 @@ import zipfile
 
 from pipeline.analyze_source import MAX_BYTES, MAX_FILES, source_files
 from pipeline.source_store import SourceStore
+from pipeline.export_cbom import export_cbom
 
 ROOT = Path(__file__).resolve().parent
 MAX_UPLOAD = 50 * 1024 * 1024
@@ -179,10 +180,10 @@ class Application:
 class Handler(BaseHTTPRequestHandler):
     server_version = 'QuantumTrace/1.0'
 
-    def json_response(self, data, status=200):
+    def json_response(self, data, status=200, content_type='application/json'):
         payload = json.dumps(data).encode()
         self.send_response(status)
-        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', str(len(payload)))
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
@@ -201,6 +202,14 @@ class Handler(BaseHTTPRequestHandler):
         app = self.server.app
         if self.command == 'GET' and path == '/api/sources':
             return self.json_response({'sources': app.store.list()})
+        export = re.fullmatch(r'/api/sources/([\w-]+)/cbom', path)
+        if export and self.command == 'GET':
+            source = app.store.get(export[1])
+            if source is None:
+                return self.json_response({'error': 'Source not found.'}, 404)
+            if source['status'] != 'ready':
+                return self.json_response({'error': 'Wait for this source to finish analysis before exporting.'}, 409)
+            return self.json_response(export_cbom(source), content_type='application/vnd.cyclonedx+json')
         match = re.fullmatch(r'/api/sources/([\w-]+)(/retry)?', path)
         if match and self.command == 'GET' and not match[2]:
             source = app.store.get(match[1])

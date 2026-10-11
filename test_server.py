@@ -78,7 +78,7 @@ class ApiTest(unittest.TestCase):
             response = error
         with response:
             raw = response.read()
-            return response.status, json.loads(raw) if response.headers.get_content_type() == 'application/json' else raw
+            return response.status, json.loads(raw) if response.headers.get_content_type() in {'application/json', 'application/vnd.cyclonedx+json'} else raw
 
     def upload(self, files, client=None, paths=None):
         boundary = 'quantumtrace-test-boundary'
@@ -196,6 +196,32 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(self.request('/api/sources', headers={'Host': 'untrusted.test'})[0], 403)
         self.assertEqual(self.upload([('../bad.py', b'RSA.generate(2048)')])[0], 400)
         self.assertEqual(self.request('/api/sources/sample', method='DELETE')[0], 400)
+
+    def test_cbom_export_reads_selected_source_directly_from_database(self):
+        store = self.server.app.store
+        saved = {'id': 'export-repo', 'name': 'team/export-repo', 'kind': 'repository', 'url': 'https://github.com/team/export-repo.git'}
+        store.create(saved)
+        try:
+            self.assertEqual(self.request('/api/sources/export-repo/cbom')[0], 409)
+            report = {'components': [{'type': 'application-code', 'name': 'database-only.py:4', 'source': 'database-only.py',
+                                     'line': 4, 'cryptoProperties': {'detectedAlgorithm': 'AES', 'language': 'python'},
+                                     'quantumRiskAssessment': {'tier': 'Medium'}}]}
+            store.save_reports(saved['id'], {'code': report, 'cloud': {'components': []}})
+            self.assertFalse((self.folder / 'inputs' / saved['id']).exists())
+            # Export succeeds without any source/report files to read.
+            with patch('pathlib.Path.read_text', side_effect=AssertionError('Export must read SQLite')):
+                status, bom = self.request('/api/sources/export-repo/cbom')
+            self.assertEqual(status, 200)
+            self.assertEqual(bom['metadata']['component']['name'], saved['name'])
+            self.assertEqual(len(bom['components']), 1, 'Sample findings must not leak into the selected repository')
+            self.assertEqual(bom['components'][0]['evidence']['occurrences'][0]['location'], 'database-only.py')
+            store.save_reports(saved['id'], {})
+            self.assertEqual(self.request('/api/sources/export-repo/cbom')[1]['components'], [], 'Each export must re-read the database')
+            store.status(saved['id'], 'failed')
+            self.assertEqual(self.request('/api/sources/export-repo/cbom')[0], 409)
+            self.assertEqual(self.request('/api/sources/missing-repo/cbom')[0], 404)
+        finally:
+            store.delete(saved['id'])
 
     def test_running_source_cannot_be_reset(self):
         with patch.object(self.server.app.jobs, 'submit'):
