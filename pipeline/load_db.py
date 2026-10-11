@@ -5,10 +5,8 @@ from database import (
     init_db,
 )
 
-
-def load_network_session(cbom: dict):
+def load_network_session(cbom: dict, source_id: int = None):
     init_db()
-
     for component in cbom.get("components", []):
         if component.get("type") != "network-session":
             continue
@@ -21,6 +19,7 @@ def load_network_session(cbom: dict):
         aut_props = props.get("authentication", {})
 
         session_data = {
+            "source_id": source_id,
             "client_endpoint": evidence.get("client"),
             "server_endpoint": evidence.get("server"),
             "protocol": props.get("protocol"),
@@ -34,15 +33,12 @@ def load_network_session(cbom: dict):
             "authentication_risk": aut_props.get("risk"),
             "conclusion": component.get("risk"),
         }
-
         add_network_session(session_data)
 
     print("Successfully loaded network sessions into the database!")
 
-
-def load_cloud_infrastructure(cbom: dict):
+def load_cloud_infrastructure(cbom: dict, source_id: int = None):
     init_db()
-
     for component in cbom.get("components", []):
         props = component.get("cryptoProperties", {})
         assessment = component.get("quantumRiskAssessment", {})
@@ -53,11 +49,11 @@ def load_cloud_infrastructure(cbom: dict):
             or props.get("sslPolicy")
             or "Unknown"
         )
-
         arn = component.get("arn", "")
         provider = "AWS" if "arn:aws" in arn else "Unknown Provider"
 
         component_data = {
+            "source_id": source_id,
             "resource_type": f"{component.get('type', 'resource')} ({component.get('name', 'unnamed')})",
             "provider": provider,
             "encryption_algorithm": algorithm,
@@ -65,20 +61,18 @@ def load_cloud_infrastructure(cbom: dict):
             "risk_level": assessment.get("tier", "UNKNOWN").upper(),
             "conclusion": assessment.get("reason", "No assessment provided."),
         }
-
         add_cloud_component(component_data)
 
     print("Successfully loaded cloud infrastructure into the database!")
 
-
-def load_code_classification(cbom: dict):
+def load_code_classification(cbom: dict, source_id: int = None):
     init_db()
-
     for component in cbom.get("components", []):
         props = component.get("cryptoProperties", {})
         assessment = component.get("quantumRiskAssessment", {})
 
         code_data = {
+            "source_id": source_id,
             "file_path": component.get("source", "Unknown Path"),
             "language": props.get("language", "Unknown"),
             "primitive": props.get("detectedAlgorithm", "Unknown"),
@@ -88,7 +82,6 @@ def load_code_classification(cbom: dict):
             "suggestion": assessment.get("reason"),
             "code_snippet": component.get("codeSnippet", ""),
         }
-
         add_code_classification(code_data)
 
     print("Successfully loaded code classification into the database!")
