@@ -1,10 +1,16 @@
 import { RISKS, riskOf, authenticationRecorded, algorithmLabel, parseRepository, filterSessions, formatBytes, reportEntries, riskDistribution, algorithmCounts } from './model.mjs';
 import { analyzeSource, listSources, exportSourceCbom } from './source-api.mjs';
 import { droppedFiles, prepareFiles, uploadPath } from './file-input.mjs';
+import { MOCK_ACCOUNTS, createMockWorkspace } from './mock-workspace.mjs';
 
 const $ = selector => document.querySelector(selector);
-const sources = [{ id: 'sample', serverId: 'sample', name: 'Sample workspace', kind: 'sample', status: 'processing', message: 'Loading saved sources…' }];
+let browserStorage;
+try { browserStorage = window.localStorage; } catch { /* Browser storage may be disabled. */ }
+const workspace = createMockWorkspace(browserStorage);
+const sampleSource = () => ({ id: 'sample', serverId: 'sample', name: 'Sample workspace', kind: 'sample', status: 'processing', message: 'Loading saved sources…' });
+const sources = [sampleSource()];
 let sourcesLoaded = false;
+let workspaceRequest = 0;
 let selectedSourceId = 'sample';
 const activeSource = () => sources.find(source => source.id === selectedSourceId);
 let report = null;
@@ -379,6 +385,8 @@ function notice(message) { $('#input-notice').textContent = message; }
 
 function renderSources() {
   const current = activeSource();
+  $('#mock-account').value = workspace.account.id;
+  $('#workspace-owner').textContent = `${workspace.account.name}’s sources`;
   $('#file-input').disabled = !sourcesLoaded;
   $('#folder-input').disabled = !sourcesLoaded;
   $('#repo-form button[type="submit"]').disabled = !sourcesLoaded;
@@ -392,8 +400,9 @@ function renderSources() {
   $('#retry-source').textContent = current.analysisFailed ? 'Retry analysis' : 'Retry connection';
   for (const label of document.querySelectorAll('[data-report-origin]')) label.textContent = current.kind === 'sample' ? 'Sample report' : 'Source analysis';
   $('#added-source-count').textContent = sources.filter(source => source.kind !== 'sample').length;
+  $('#remove-all-sources').disabled = !sourcesLoaded || sources.length <= 1;
   $('#source-list').replaceChildren(...sources.filter(source => source.kind !== 'sample').map(source => {
-    const item = element('li');
+    const item = element('li', '', 'source-item');
     const button = element('button', '', 'source-choice');
     button.setAttribute('aria-pressed', String(source.id === selectedSourceId));
     const description = element('span', source.name);
@@ -403,7 +412,12 @@ function renderSources() {
       selectSource(source.id);
       location.hash = '/analysis';
     });
-    item.append(button);
+    const remove = element('button', 'Remove', 'button subtle remove-added-source');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `Remove ${source.name} from ${workspace.account.name}’s view`);
+    remove.title = 'Hide from this account. Saved analysis is kept.';
+    remove.addEventListener('click', () => removeSources([source]));
+    item.append(button, remove);
     return item;
   }));
   $('#sources-empty').hidden = sources.length > 1;
@@ -427,14 +441,28 @@ function selectSource(id) {
 }
 
 function startAnalysis(source, retry = false) {
+  const owner = workspace.account.id;
+  workspace.remember(source, owner);
   return analyzeSource(source, () => {
-    if (!sources.includes(source)) return;
+    // Capture the server ID even if the user switches accounts or removes a pending upload.
+    workspace.remember(source, owner);
+    if (!sources.includes(source)) {
+      if (source.serverId) source.controller?.abort();
+      return;
+    }
     renderSources();
     if (source === activeSource()) refreshScope();
   }, { retry });
 }
 
 async function loadWorkspace() {
+  const request = ++workspaceRequest;
+  for (const source of sources) if (source.serverId) source.controller?.abort();
+  sources.splice(0, sources.length, sampleSource());
+  selectedSourceId = 'sample';
+  sourcesLoaded = false;
+  $('#search').value = '';
+  $('#risk-filter').value = 'ALL';
   $('#retry-sources').hidden = true;
   Object.assign(activeSource(), { status: 'processing', message: 'Loading saved sources…' });
   renderSources();
@@ -442,13 +470,15 @@ async function loadWorkspace() {
   notice('Loading saved sources…');
   try {
     const saved = await listSources();
+    if (request !== workspaceRequest) return;
     if (!saved.some(source => source.id === 'sample')) throw new Error('The source list is missing the sample workspace. Check the server and retry.');
-    sources.splice(0, sources.length, ...saved);
+    sources.splice(0, sources.length, ...workspace.visible(saved));
     sourcesLoaded = true;
-    notice('Saved sources restored. Select a source to view its analysis.');
+    notice(`${workspace.account.name}’s workspace is ready. New sources will be added to this account.`);
     renderSources();
     for (const source of sources) startAnalysis(source);
   } catch (error) {
+    if (request !== workspaceRequest) return;
     const source = activeSource();
     source.status = 'error';
     source.message = error.message;
@@ -458,6 +488,31 @@ async function loadWorkspace() {
     refreshScope();
   }
 }
+
+function removeSources(removed) {
+  const added = removed.filter(source => source.kind !== 'sample' && sources.includes(source));
+  if (!added.length) return;
+  for (const source of added) {
+    workspace.hide(source);
+    // Let an initial submission return its identity; stop polling as soon as it does.
+    if (source.serverId) source.controller?.abort();
+    sources.splice(sources.indexOf(source), 1);
+  }
+  selectSource(sources.some(source => source.id === selectedSourceId) ? selectedSourceId : 'sample');
+  notice(`${added.length === 1 ? added[0].name : `${added.length} sources`} removed from ${workspace.account.name}’s view. Saved analyses are kept.`);
+  (location.hash === '#/analysis' ? $('#workspace-source')
+    : $('#remove-all-sources').disabled ? $('#mock-account') : $('#remove-all-sources')).focus();
+}
+
+$('#mock-account').replaceChildren(...MOCK_ACCOUNTS.map(account => new Option(account.name, account.id)));
+$('#mock-account').addEventListener('change', event => {
+  workspace.select(event.target.value);
+  $('#repo-url').value = '';
+  $('#repo-error').textContent = '';
+  $('#repo-url').removeAttribute('aria-invalid');
+  loadWorkspace();
+});
+$('#remove-all-sources').addEventListener('click', () => removeSources([...sources]));
 
 function addFiles(fileList) {
   if (!sourcesLoaded) { notice('Connect to the server before adding files.'); return; }
@@ -492,8 +547,13 @@ $('#drop-zone').addEventListener('drop', async event => {
   $('#drop-zone').classList.remove('dragging');
   if (!sourcesLoaded) { notice('Connect to the server before adding files.'); return; }
   notice('Reading dropped files and folders…');
-  try { addFiles(await droppedFiles(event.dataTransfer)); }
-  catch (error) { notice(`Could not read the dropped files. ${error.message}`); }
+  const request = workspaceRequest;
+  try {
+    const files = await droppedFiles(event.dataTransfer);
+    if (request === workspaceRequest) addFiles(files);
+  } catch (error) {
+    if (request === workspaceRequest) notice(`Could not read the dropped files. ${error.message}`);
+  }
 });
 // Prevent file drops outside the target from navigating away and losing the current sources.
 for (const type of ['dragover', 'drop']) document.addEventListener(type, event => {
@@ -524,14 +584,7 @@ $('#repo-url').addEventListener('input', () => { $('#repo-error').textContent = 
 $('#workspace-source').addEventListener('change', event => selectSource(event.target.value));
 $('#retry-source').addEventListener('click', () => sourcesLoaded ? startAnalysis(activeSource(), true) : loadWorkspace());
 $('#retry-sources').addEventListener('click', loadWorkspace);
-$('#remove-source').addEventListener('click', () => {
-  const source = activeSource();
-  if (source.kind === 'sample') return;
-  source.controller?.abort();
-  sources.splice(sources.indexOf(source), 1);
-  selectSource('sample');
-  notice(`${source.name} removed from this tab. Saved results will return on reload.`);
-});
+$('#remove-source').addEventListener('click', () => removeSources([activeSource()]));
 $('#search').addEventListener('input', renderSessions);
 $('#risk-filter').addEventListener('change', renderSessions);
 $('#source-filter').addEventListener('change', renderSessions);
@@ -555,6 +608,7 @@ $('#export-report').addEventListener('click', async () => {
   $('#export-report').disabled = true;
   try {
     const cbom = await exportSourceCbom(source.serverId);
+    if (source !== activeSource()) return;
     const url = URL.createObjectURL(new Blob([JSON.stringify(cbom, null, 2) + '\n'], { type: 'application/vnd.cyclonedx+json' }));
     const link = element('a');
     link.href = url;

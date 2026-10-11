@@ -81,6 +81,7 @@ export async function analyzeSource(source, onUpdate, { retry = false } = {}) {
       }
       source.message = 'Analysis in progress. Results will appear automatically.';
       onUpdate();
+      if (controller.signal.aborted) return;
       await new Promise((resolve, reject) => {
         const abort = () => { clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')); };
         const timer = setTimeout(() => { controller.signal.removeEventListener('abort', abort); resolve(); }, 1500);
