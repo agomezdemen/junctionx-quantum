@@ -36,16 +36,6 @@ def ingest_cbom_file(file_path: str):
 
 
 if __name__ == "__main__":
-    import glob
-
-    files_to_load = glob.glob("*.json")
-
-    if not files_to_load:
-        print("No json files in this directory")
-
-    else:
-        for cbom_file in files_to_load:
-            ingest_cbom_file(cbom_file)
-
-    for cbom_file in files_to_load:
+    target_files = ["cbom_code.json", "cbom_cloud.json", "cbom_network_classified.json"]
+    for cbom_file in target_files:
         ingest_cbom_file(cbom_file)
