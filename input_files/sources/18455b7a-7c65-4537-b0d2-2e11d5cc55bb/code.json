@@ -1,0 +1,15 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "source": "Static Code Cryptographic Inventory (SAST)",
+    "quantumRiskSummary": {
+      "totalFindings": 0,
+      "criticalFindings": 0,
+      "mediumFindings": 0,
+      "safeFindings": 0,
+      "codeQuantumRiskScore": "0.0%"
+    }
+  },
+  "components": []
+}

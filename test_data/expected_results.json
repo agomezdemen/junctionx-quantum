@@ -1,0 +1,165 @@
+{
+  "description": "Expected output of the current QuantumTrace scanners; not a security certification.",
+  "totalFindings": 27,
+  "riskCounts": {
+    "code": {
+      "SAFE": 3,
+      "CRITICAL": 7,
+      "MEDIUM": 3
+    },
+    "cloud": {
+      "CRITICAL": 6,
+      "SAFE": 1,
+      "MEDIUM": 1
+    },
+    "network": {
+      "CRITICAL": 3,
+      "SAFE": 1,
+      "MEDIUM": 1,
+      "UNKNOWN": 1
+    }
+  },
+  "findings": {
+    "code": [
+      {
+        "source": "code/python/pqc_config.py",
+        "name": "pqc_config.py:2",
+        "risk": "Safe"
+      },
+      {
+        "source": "code/python/legacy/main.py",
+        "name": "main.py:6",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/python/legacy/main.py",
+        "name": "main.py:7",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/python/symmetric/main.py",
+        "name": "main.py:5",
+        "risk": "Medium"
+      },
+      {
+        "source": "code/java/LegacyCrypto.java",
+        "name": "LegacyCrypto.java:8",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/java/LegacyCrypto.java",
+        "name": "LegacyCrypto.java:9",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/java/LegacyCrypto.java",
+        "name": "LegacyCrypto.java:10",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/java/SymmetricCrypto.java",
+        "name": "SymmetricCrypto.java:6",
+        "risk": "Medium"
+      },
+      {
+        "source": "code/java/MigrationConfig.java",
+        "name": "MigrationConfig.java:3",
+        "risk": "Safe"
+      },
+      {
+        "source": "code/go/legacy/main.go",
+        "name": "main.go:12",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/go/legacy/main.go",
+        "name": "main.go:13",
+        "risk": "Critical"
+      },
+      {
+        "source": "code/go/symmetric/main.go",
+        "name": "main.go:8",
+        "risk": "Medium"
+      },
+      {
+        "source": "code/go/pqc/main.go",
+        "name": "main.go:4",
+        "risk": "Safe"
+      }
+    ],
+    "cloud": [
+      {
+        "source": "cloud/kms_key_inventory.json",
+        "name": "alias/demo-legacy-signing",
+        "risk": "Critical"
+      },
+      {
+        "source": "cloud/kms_key_inventory.json",
+        "name": "alias/demo-device-signing",
+        "risk": "Critical"
+      },
+      {
+        "source": "cloud/kms_key_inventory.json",
+        "name": "alias/demo-symmetric-storage",
+        "risk": "Safe"
+      },
+      {
+        "source": "cloud/kms_key_inventory.json",
+        "name": "alias/demo-missing-key-spec",
+        "risk": "Medium"
+      },
+      {
+        "source": "cloud/acm_certificates.json",
+        "name": "legacy.example.test",
+        "risk": "Critical"
+      },
+      {
+        "source": "cloud/acm_certificates.json",
+        "name": "portal.example.test",
+        "risk": "Critical"
+      },
+      {
+        "source": "cloud/load_balancer_listeners.json",
+        "name": "demo-edge:443",
+        "risk": "Critical"
+      },
+      {
+        "source": "cloud/load_balancer_listeners.json",
+        "name": "demo-edge:8443",
+        "risk": "Critical"
+      }
+    ],
+    "network": [
+      {
+        "source": "network/legacy_tls.pcap",
+        "name": "TLS-Session-198.51.100.1:443",
+        "risk": "CRITICAL"
+      },
+      {
+        "source": "network/legacy_tls.pcap",
+        "name": "TLS-Session-198.51.100.2:443",
+        "risk": "CRITICAL"
+      },
+      {
+        "source": "network/legacy_tls.pcap",
+        "name": "TLS-Session-198.51.100.3:443",
+        "risk": "CRITICAL"
+      },
+      {
+        "source": "network/hybrid_safe_tls.pcap",
+        "name": "TLS-Session-198.51.100.4:443",
+        "risk": "SAFE"
+      },
+      {
+        "source": "network/hybrid_aes128_tls.pcap",
+        "name": "TLS-Session-198.51.100.5:443",
+        "risk": "MEDIUM"
+      },
+      {
+        "source": "network/clienthello_only.pcap",
+        "name": "TLS-Session-198.51.100.6:443",
+        "risk": "UNKNOWN"
+      }
+    ]
+  }
+}
