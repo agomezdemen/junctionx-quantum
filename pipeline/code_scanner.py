@@ -1,11 +1,9 @@
+import json
 import os
 import re
-import json
-from typing import Dict, Any, List
+from typing import Any
 
-# Padrões regex por linguagem com indicação de algoritmo e família
 RULES = [
-    # --- Python ---
     {
         "lang": "python",
         "ext": [".py"],
@@ -13,7 +11,7 @@ RULES = [
         "name_fmt": lambda m: f"RSA-{m.group(1) or m.group(2)}",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Chave assimétrica RSA vulnerável à fatorização via Algoritmo de Shor."
+        "reason": "Asymmetric RSA key vulnerable to factoring via Shor's Algorithm.",
     },
     {
         "lang": "python",
@@ -22,7 +20,7 @@ RULES = [
         "name_fmt": lambda m: f"ECDSA-SECP{m.group(1) or m.group(2)}R1",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Curva elíptica clássica vulnerável a logaritmo discreto via Algoritmo de Shor."
+        "reason": "Classical elliptic curve vulnerable to discrete logarithm via Shor's Algorithm.",
     },
     {
         "lang": "python",
@@ -31,7 +29,7 @@ RULES = [
         "name_fmt": lambda m: "AES",
         "threat": "Grover",
         "tier": "Medium",
-        "reason": "Cifra simétrica padrão; requer chaves >= 256 bits para resistir a Grover."
+        "reason": "Standard symmetric cipher; requires keys >= 256 bits to resist Grover.",
     },
     {
         "lang": "python",
@@ -40,7 +38,7 @@ RULES = [
         "name_fmt": lambda m: "Legacy-Hash (SHA1/MD5)",
         "threat": "Classical Weakness",
         "tier": "Critical",
-        "reason": "Função de dispersão obsoleta com colisões clássicas e suscetível a Grover."
+        "reason": "Obsolete hash function with classical collisions and susceptible to Grover.",
     },
     {
         "lang": "python",
@@ -49,10 +47,8 @@ RULES = [
         "name_fmt": lambda m: f"PQC-{m.group(0).upper()}",
         "threat": "None",
         "tier": "Safe",
-        "reason": "Algoritmo pós-quântico de reticulados/hashing resistente a Shor e Grover."
+        "reason": "Post-quantum lattice/hashing algorithm resistant to Shor and Grover.",
     },
-
-    # --- Java ---
     {
         "lang": "java",
         "ext": [".java"],
@@ -60,7 +56,7 @@ RULES = [
         "name_fmt": lambda m: "RSA (Java KeyPairGenerator)",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Geração de chaves RSA em Java vulnerável a Shor."
+        "reason": "RSA key generation in Java vulnerable to Shor.",
     },
     {
         "lang": "java",
@@ -69,7 +65,7 @@ RULES = [
         "name_fmt": lambda m: "ECDSA (Java KeyPairGenerator)",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Curvas elípticas clássicas em Java vulneráveis a Shor."
+        "reason": "Classical elliptic curves in Java vulnerable to Shor.",
     },
     {
         "lang": "java",
@@ -78,7 +74,7 @@ RULES = [
         "name_fmt": lambda m: "AES (Java Cipher)",
         "threat": "Grover",
         "tier": "Medium",
-        "reason": "Cifra simétrica AES; verificar se chave é de 256 bits para imunidade prática a Grover."
+        "reason": "Symmetric AES cipher; verify if key is 256 bits for practical immunity to Grover.",
     },
     {
         "lang": "java",
@@ -87,19 +83,17 @@ RULES = [
         "name_fmt": lambda m: "SHA1/MD5 (Java MessageDigest)",
         "threat": "Classical Weakness",
         "tier": "Critical",
-        "reason": "Digest criptográfico fraco e obsoleto."
+        "reason": "Weak and obsolete cryptographic digest.",
     },
     {
         "lang": "java",
         "ext": [".java"],
-        "regex": r'(?:MLKEM|Kyber|Dilithium|BNCrypto|BouncyCastlePQC)',
+        "regex": r"(?:MLKEM|Kyber|Dilithium|BNCrypto|BouncyCastlePQC)",
         "name_fmt": lambda m: f"PQC-Java-{m.group(0)}",
         "threat": "None",
         "tier": "Safe",
-        "reason": "Primitiva PQC identificada em Java."
+        "reason": "PQC primitive identified in Java.",
     },
-
-    # --- Go ---
     {
         "lang": "go",
         "ext": [".go"],
@@ -107,7 +101,7 @@ RULES = [
         "name_fmt": lambda m: "RSA (crypto/rsa)",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Chave assimétrica RSA em Go vulnerável ao Algoritmo de Shor."
+        "reason": "Asymmetric RSA key in Go vulnerable to Shor's Algorithm.",
     },
     {
         "lang": "go",
@@ -116,7 +110,7 @@ RULES = [
         "name_fmt": lambda m: "ECDSA (crypto/ecdsa)",
         "threat": "Shor",
         "tier": "Critical",
-        "reason": "Curvas elípticas padrão da biblioteca crypto/ecdsa em Go vulneráveis a Shor."
+        "reason": "Standard elliptic curves from crypto/ecdsa library in Go vulnerable to Shor.",
     },
     {
         "lang": "go",
@@ -125,7 +119,7 @@ RULES = [
         "name_fmt": lambda m: "AES (crypto/aes)",
         "threat": "Grover",
         "tier": "Medium",
-        "reason": "Cifra AES em Go; Grover reduz o espaço de busca efetivo para metade do tamanho da chave."
+        "reason": "AES cipher in Go; Grover reduces the effective search space to half the key size.",
     },
     {
         "lang": "go",
@@ -134,22 +128,22 @@ RULES = [
         "name_fmt": lambda m: f"PQC-Go-{m.group(0)}",
         "threat": "None",
         "tier": "Safe",
-        "reason": "Pacote pós-quântico (ex: Cloudflare CIRCL / ML-KEM) resistente a ataques quânticos."
-    }
+        "reason": "Post-quantum package resistant to quantum attacks.",
+    },
 ]
 
-def scan_repositories(base_dir: str = "../input_files/sample-repos", output_file: str = "cbom_code.json"):
-    # Fallback para caminhos comuns
+
+def scan_repositories(
+    base_dir: str = "../input_files/sample-repos", output_file: str = "cbom_code.json"
+):
     if not os.path.exists(base_dir):
         if os.path.exists("input_files/sample-repos"):
             base_dir = "input_files/sample-repos"
         elif os.path.exists("./sample-repos"):
             base_dir = "./sample-repos"
 
-    components: List[Dict[str, Any]] = []
+    components: list[dict[str, Any]] = []
     stats = {"Critical": 0, "Medium": 0, "Safe": 0}
-
-    print(f"[*] A iniciar varrimento SAST em: {base_dir}")
 
     for root, _, files in os.walk(base_dir):
         for file in files:
@@ -164,7 +158,6 @@ def scan_repositories(base_dir: str = "../input_files/sample-repos", output_file
                 with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     for line_num, line in enumerate(f, start=1):
                         clean_line = line.strip()
-                        # Ignorar comentários simples
                         if clean_line.startswith(("//", "#", "/*", "*")):
                             continue
 
@@ -174,28 +167,41 @@ def scan_repositories(base_dir: str = "../input_files/sample-repos", output_file
                                 alg_name = rule["name_fmt"](match)
                                 stats[rule["tier"]] += 1
 
-                                components.append({
-                                    "type": "application-code",
-                                    "name": f"{file}:{line_num}",
-                                    "source": file_path,
-                                    "line": line_num,
-                                    "codeSnippet": clean_line[:120],
-                                    "cryptoProperties": {
-                                        "assetType": "code-primitive",
-                                        "language": rule["lang"],
-                                        "detectedAlgorithm": alg_name
-                                    },
-                                    "quantumRiskAssessment": {
-                                        "tier": rule["tier"],
-                                        "threat": rule["threat"],
-                                        "reason": rule["reason"]
+                                size_match = re.search(
+                                    r"\b(128|192|256|512|1024|2048|3072|4096)\b",
+                                    clean_line,
+                                )
+                                key_size = (
+                                    int(size_match.group(1)) if size_match else None
+                                )
+
+                                components.append(
+                                    {
+                                        "type": "application-code",
+                                        "name": f"{file}:{line_num}",
+                                        "source": file_path,
+                                        "line": line_num,
+                                        "codeSnippet": clean_line[:120],
+                                        "cryptoProperties": {
+                                            "assetType": "code-primitive",
+                                            "language": rule["lang"],
+                                            "detectedAlgorithm": alg_name,
+                                            "keySize": key_size,
+                                        },
+                                        "quantumRiskAssessment": {
+                                            "tier": rule["tier"],
+                                            "threat": rule["threat"],
+                                            "reason": rule["reason"],
+                                        },
                                     }
-                                })
-            except Exception as e:
-                print(f"[!] Erro ao ler ficheiro {file_path}: {e}")
+                                )
+            except Exception:
+                pass
 
     total = len(components)
-    score = round(((stats["Critical"] * 1.0 + stats["Medium"] * 0.4) / max(total, 1)) * 100, 2)
+    score = round(
+        ((stats["Critical"] * 1.0 + stats["Medium"] * 0.4) / max(total, 1)) * 100, 2
+    )
 
     cbom_code = {
         "bomFormat": "CycloneDX-CBOM-Draft",
@@ -207,25 +213,18 @@ def scan_repositories(base_dir: str = "../input_files/sample-repos", output_file
                 "criticalFindings": stats["Critical"],
                 "mediumFindings": stats["Medium"],
                 "safeFindings": stats["Safe"],
-                "codeQuantumRiskScore": f"{score}%"
-            }
+                "codeQuantumRiskScore": f"{score}%",
+            },
         },
-        "components": components
+        "components": components,
     }
 
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(cbom_code, f, indent=2)
 
-    print(f"\n[✓] Varrimento de código concluído!")
-    print(f"    - Total de Ocorrências: {total}")
-    print(f"    - Críticas (Shor): {stats['Critical']}")
-    print(f"    - Médias (Grover): {stats['Medium']}")
-    print(f"    - Seguras (PQC): {stats['Safe']}")
-    print(f"    - Score de Risco no Código: {score}%")
-    print(f"    - Ficheiro gravado em: '{output_file}'")
 
-    
 if __name__ == "__main__":
     import sys
+
     target = sys.argv[1] if len(sys.argv) > 1 else "../input_files/sample-repos"
     scan_repositories(base_dir=target)

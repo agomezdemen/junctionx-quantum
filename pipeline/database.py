@@ -11,12 +11,10 @@ def init_db(db_path: str = DB_FILE) -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 file_path TEXT NOT NULL,
                 language TEXT NOT NULL,
-                library TEXT NOT NULL,
                 primitive TEXT NOT NULL,
                 risk TEXT NOT NULL,
                 key_size INTEGER,
                 line_number INTEGER,
-                nist_standard TEXT,
                 suggestion TEXT,
                 code_snippet TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -60,18 +58,16 @@ def add_code_classification(classification: dict, db_path: str = DB_FILE) -> Non
         cursor = conn.cursor()
         cursor.execute(
             """
-            INSERT INTO code_classification (file_path, language, library, primitive, risk, key_size, line_number, nist_standard, suggestion,
-            code_snippet) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+            INSERT INTO code_classification (file_path, language, primitive, risk, key_size, line_number, suggestion,
+            code_snippet) VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
         """,
             (
                 classification.get("file_path"),
                 classification.get("language"),
-                classification.get("library"),
                 classification.get("primitive"),
                 classification.get("risk"),
                 classification.get("key_size"),
                 classification.get("line_number"),
-                classification.get("nist_standard"),
                 classification.get("suggestion"),
                 classification.get("code_snippet"),
             ),

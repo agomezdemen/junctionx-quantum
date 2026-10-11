@@ -1,4 +1,9 @@
-from database import add_network_session, init_db, add_cloud_component
+from database import (
+    add_cloud_component,
+    add_code_classification,
+    add_network_session,
+    init_db,
+)
 
 
 def load_network_session(cbom: dict):
@@ -32,16 +37,13 @@ def load_network_session(cbom: dict):
 
         add_network_session(session_data)
 
-    print("Successfully loaded sessions into the database!")
+    print("Successfully loaded network sessions into the database!")
 
 
-def laod_cloud_infrastructure(cbom: dict):
+def load_cloud_infrastructure(cbom: dict):
     init_db()
 
     for component in cbom.get("components", []):
-        if component.get("type") != "network-session":
-            continue
-
         props = component.get("cryptoProperties", {})
         assessment = component.get("quantumRiskAssessment", {})
 
@@ -53,7 +55,7 @@ def laod_cloud_infrastructure(cbom: dict):
         )
 
         arn = component.get("arn", "")
-        provider = "AWS" if "arn:aws" in arn else "Unknow Provider"
+        provider = "AWS" if "arn:aws" in arn else "Unknown Provider"
 
         component_data = {
             "resource_type": f"{component.get('type', 'resource')} ({component.get('name', 'unnamed')})",
@@ -66,4 +68,27 @@ def laod_cloud_infrastructure(cbom: dict):
 
         add_cloud_component(component_data)
 
-        print("Sucessfully loaded sessions into the database!")
+    print("Successfully loaded cloud infrastructure into the database!")
+
+
+def load_code_classification(cbom: dict):
+    init_db()
+
+    for component in cbom.get("components", []):
+        props = component.get("cryptoProperties", {})
+        assessment = component.get("quantumRiskAssessment", {})
+
+        code_data = {
+            "file_path": component.get("source", "Unknown Path"),
+            "language": props.get("language", "Unknown"),
+            "primitive": props.get("detectedAlgorithm", "Unknown"),
+            "risk": assessment.get("tier", "UNKNOWN").upper(),
+            "key_size": props.get("keySize"),
+            "line_number": component.get("line"),
+            "suggestion": assessment.get("reason"),
+            "code_snippet": component.get("codeSnippet", ""),
+        }
+
+        add_code_classification(code_data)
+
+    print("Successfully loaded code classification into the database!")
