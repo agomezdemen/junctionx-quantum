@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 
 from classify_network_cbom import classify_cbom
@@ -8,6 +9,13 @@ from cloud_posture_scanner import scan_cloud_posture
 from code_scanner import scan_repositories
 from pcap_scanner import analyze_pcap_to_cbom
 from translate_network_cbom import translate_cbom
+
+
+def archive_processed_file(filepath: str, output_dir: str = "."):
+    archive_dir = os.path.join(output_dir, "processed")
+    os.makedirs(archive_dir, exist_ok=True)
+    if os.path.exists(filepath):
+        shutil.move(filepath, os.path.join(archive_dir, os.path.basename(filepath)))
 
 
 def execute_network_pipeline(pcap_files: list[str], output_dir: str = "."):
@@ -34,6 +42,7 @@ def execute_network_pipeline(pcap_files: list[str], output_dir: str = "."):
             os.remove(raw_output)
 
         print(f"CBOM successfully generated: '{classified_output}'")
+        archive_processed_file(classified_output, output_dir=output_dir)
 
 
 def execute_cloud_scanner(cloud_dirs_or_files: list[str], output_dir: str = "."):
@@ -50,6 +59,7 @@ def execute_cloud_scanner(cloud_dirs_or_files: list[str], output_dir: str = ".")
             out_file = os.path.join(output_dir, f"cbom_cloud{suffix}.json")
             print(f"\nRunning Cloud Posture Scanner on: {c_dir}")
             scan_cloud_posture(base_dir=c_dir, output_file=out_file)
+            archive_processed_file(out_file, output_dir=output_dir)
 
 
 def execute_code_scanner(code_dirs_or_files: list[str], output_dir: str = "."):
@@ -66,6 +76,7 @@ def execute_code_scanner(code_dirs_or_files: list[str], output_dir: str = "."):
             out_file = os.path.join(output_dir, f"cbom_code{suffix}.json")
             print(f"\nRunning Code SAST Scanner on: {c_dir}")
             scan_repositories(base_dir=c_dir, output_file=out_file)
+            archive_processed_file(out_file, output_dir=output_dir)
 
 
 def main():
