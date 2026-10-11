@@ -129,7 +129,7 @@ def classify_session(properties):
     suite = properties.get("cipherSuite", {})
     group = properties.get("keyExchangeGroup", {})
     if not isinstance(suite, dict) or not isinstance(group, dict):
-        raise TypeError(
+        raise ValueError(
             "Expected structured readable CBOM; run translate_cbom.py first."
         )
     encryption = primitive_risk(suite.get("encryption", {}), "encryption")
