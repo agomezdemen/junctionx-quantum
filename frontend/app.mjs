@@ -1,5 +1,6 @@
 import { RISKS, riskOf, authenticationRecorded, algorithmLabel, parseRepository, filterSessions, formatBytes, reportEntries, riskDistribution, algorithmCounts } from './model.mjs';
 import { analyzeSource, listSources } from './source-api.mjs';
+import { droppedFiles, prepareFiles, uploadPath } from './file-input.mjs';
 
 const $ = selector => document.querySelector(selector);
 const sources = [{ id: 'sample', serverId: 'sample', name: 'Sample workspace', kind: 'sample', status: 'processing', message: 'Loading saved sources…' }];
@@ -379,6 +380,7 @@ function notice(message) { $('#input-notice').textContent = message; }
 function renderSources() {
   const current = activeSource();
   $('#file-input').disabled = !sourcesLoaded;
+  $('#folder-input').disabled = !sourcesLoaded;
   $('#repo-form button[type="submit"]').disabled = !sourcesLoaded;
   const labels = { ready: 'Ready', processing: 'Analyzing', error: 'Needs attention' };
   $('#workspace-source').replaceChildren(...sources.map(source => new Option(`${source.name} · ${labels[source.status]}`, source.id)));
@@ -459,12 +461,16 @@ async function loadWorkspace() {
 
 function addFiles(fileList) {
   if (!sourcesLoaded) { notice('Connect to the server before adding files.'); return; }
-  const files = [...new Map([...fileList].map(file => [`${file.name}:${file.size}:${file.lastModified}`, file])).values()];
-  if (!files.length) { notice('No files were added. Drop files or choose Browse files.'); return; }
-  const fingerprint = files.map(file => `${file.name}:${file.size}:${file.lastModified}`).sort().join('|');
+  let files;
+  try { files = prepareFiles(fileList); }
+  catch (error) { notice(error.message); return; }
+  if (!files.length) { notice('No files were added. The selection is empty or contains only excluded folders.'); return; }
+  const fingerprint = files.map(file => `${uploadPath(file)}:${file.size}:${file.lastModified}`).sort().join('|');
   const existing = sources.find(source => source.fingerprint === fingerprint);
   if (existing) { selectSource(existing.id); notice('This file collection is already added. Its results are now selected.'); return; }
-  const source = { id: crypto.randomUUID(), name: files.length === 1 ? files[0].name : `${files[0].name} + ${files.length - 1} files`, kind: 'files', files, fingerprint };
+  const folder = uploadPath(files[0]).split('/')[0];
+  const name = files.every(file => uploadPath(file).startsWith(folder + '/')) ? folder : files.length === 1 ? files[0].name : `${files[0].name} + ${files.length - 1} files`;
+  const source = { id: crypto.randomUUID(), name, kind: 'files', files, fingerprint };
   sources.push(source);
   selectedSourceId = source.id;
   $('#search').value = '';
@@ -473,18 +479,21 @@ function addFiles(fileList) {
   startAnalysis(source);
 }
 
-$('#file-input').addEventListener('change', event => { addFiles(event.target.files); event.target.value = ''; });
+for (const selector of ['#file-input', '#folder-input']) {
+  $(selector).addEventListener('change', event => { addFiles(event.target.files); event.target.value = ''; });
+}
 let dragDepth = 0;
 $('#drop-zone').addEventListener('dragenter', event => { event.preventDefault(); dragDepth++; $('#drop-zone').classList.add('dragging'); });
 $('#drop-zone').addEventListener('dragover', event => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy'; });
 $('#drop-zone').addEventListener('dragleave', () => { if (--dragDepth <= 0) $('#drop-zone').classList.remove('dragging'); });
-$('#drop-zone').addEventListener('drop', event => {
+$('#drop-zone').addEventListener('drop', async event => {
   event.preventDefault();
   dragDepth = 0;
   $('#drop-zone').classList.remove('dragging');
-  const items = [...(event.dataTransfer.items || [])];
-  if (items.some(item => item.webkitGetAsEntry?.()?.isDirectory)) { notice('Please select individual files or a project archive; folder drops are not supported.'); return; }
-  addFiles(event.dataTransfer.files);
+  if (!sourcesLoaded) { notice('Connect to the server before adding files.'); return; }
+  notice('Reading dropped files and folders…');
+  try { addFiles(await droppedFiles(event.dataTransfer)); }
+  catch (error) { notice(`Could not read the dropped files. ${error.message}`); }
 });
 // Prevent file drops outside the target from navigating away and losing the current sources.
 for (const type of ['dragover', 'drop']) document.addEventListener(type, event => {

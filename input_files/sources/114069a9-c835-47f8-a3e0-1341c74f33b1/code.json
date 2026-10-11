@@ -1,0 +1,250 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "source": "Static Code Cryptographic Inventory (SAST)",
+    "quantumRiskSummary": {
+      "totalFindings": 13,
+      "criticalFindings": 7,
+      "mediumFindings": 3,
+      "safeFindings": 3,
+      "codeQuantumRiskScore": "63.08%"
+    }
+  },
+  "components": [
+    {
+      "type": "application-code",
+      "name": "main.go:12",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/go/legacy/main.go",
+      "line": 12,
+      "codeSnippet": "_, _ = rsa.GenerateKey(rand.Reader, 2048)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "RSA (crypto/rsa)",
+        "keySize": 2048
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Asymmetric RSA key in Go vulnerable to Shor's Algorithm."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:13",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/go/legacy/main.go",
+      "line": 13,
+      "codeSnippet": "_, _ = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "ECDSA (crypto/ecdsa)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Standard elliptic curves from crypto/ecdsa library in Go vulnerable to Shor."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:4",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/go/pqc/main.go",
+      "line": 4,
+      "codeSnippet": "const target = \"mlkem768\"",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "PQC-Go-mlkem",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Safe",
+        "threat": "None",
+        "reason": "Post-quantum package resistant to quantum attacks."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:8",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/go/symmetric/main.go",
+      "line": 8,
+      "codeSnippet": "_, _ = aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "AES cipher in Go; Grover reduces the effective search space to half the key size."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "LegacyCrypto.java:8",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/java/LegacyCrypto.java",
+      "line": 8,
+      "codeSnippet": "KeyPairGenerator.getInstance(\"RSA\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "RSA (Java KeyPairGenerator)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "RSA key generation in Java vulnerable to Shor."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "LegacyCrypto.java:9",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/java/LegacyCrypto.java",
+      "line": 9,
+      "codeSnippet": "KeyPairGenerator.getInstance(\"EC\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "ECDSA (Java KeyPairGenerator)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Classical elliptic curves in Java vulnerable to Shor."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "LegacyCrypto.java:10",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/java/LegacyCrypto.java",
+      "line": 10,
+      "codeSnippet": "MessageDigest.getInstance(\"MD5\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "SHA1/MD5 (Java MessageDigest)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Weak and obsolete cryptographic digest."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "MigrationConfig.java:3",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/java/MigrationConfig.java",
+      "line": 3,
+      "codeSnippet": "public static final String TARGET = \"MLKEM\";",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "PQC-Java-MLKEM",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Safe",
+        "threat": "None",
+        "reason": "PQC primitive identified in Java."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "SymmetricCrypto.java:6",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/java/SymmetricCrypto.java",
+      "line": 6,
+      "codeSnippet": "return Cipher.getInstance(\"AES/GCM/NoPadding\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "AES (Java Cipher)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Symmetric AES cipher; verify if key is 256 bits for practical immunity to Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "pqc_config.py:2",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/python/pqc_config.py",
+      "line": 2,
+      "codeSnippet": "migration_target = {\"key_exchange\": \"mlkem768\"}",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "PQC-MLKEM",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Safe",
+        "threat": "None",
+        "reason": "Post-quantum lattice/hashing algorithm resistant to Shor and Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.py:6",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/python/legacy/main.py",
+      "line": 6,
+      "codeSnippet": "key = RSA.generate(2048)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "RSA-2048",
+        "keySize": 2048
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Asymmetric RSA key vulnerable to factoring via Shor's Algorithm."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.py:7",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/python/legacy/main.py",
+      "line": 7,
+      "codeSnippet": "digest = hashlib.sha1()",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "Legacy-Hash (SHA1/MD5)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Obsolete hash function with classical collisions and susceptible to Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.py:5",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/114069a9-c835-47f8-a3e0-1341c74f33b1/input/.quantumtrace-extracted/quantumtrace_demo.zip/quantumtrace_demo/code/python/symmetric/main.py",
+      "line": 5,
+      "codeSnippet": "return algorithms.AES(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "AES",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Standard symmetric cipher; requires keys >= 256 bits to resist Grover."
+      }
+    }
+  ]
+}

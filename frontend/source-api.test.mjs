@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { analyzeSource, listSources } from './source-api.mjs';
+import { prepareFiles } from './file-input.mjs';
 
 const originalFetch = globalThis.fetch;
 try {
@@ -24,12 +25,35 @@ try {
     assert.equal(url, '/api/sources');
     assert.equal(options.body.get('clientSourceId'), files.id);
     assert.deepEqual(options.body.getAll('files').map(file => file.name), ['a.py', 'b.pcap']);
+    assert.deepEqual(JSON.parse(options.body.get('paths')), ['a.py', 'b.pcap']);
     return new Response('', { status: 501 });
   };
   await analyzeSource(files, () => {});
   assert.equal(files.status, 'error');
   assert.match(files.message, /backend is not connected/);
   assert.equal(files.reports, undefined);
+
+  // Both folder drops and the folder picker retain identical basenames in distinct directories.
+  for (const pathProperty of ['relativePath', 'webkitRelativePath']) {
+    const paths = ['project/client/main.py', 'project/server/main.py'];
+    const folder = { id: `folder-${pathProperty}`, kind: 'files', files: prepareFiles(paths.map(path => {
+      const file = new File(['RSA.generate(2048)'], 'main.py', { lastModified: 123 });
+      Object.defineProperty(file, pathProperty, { value: path });
+      return file;
+    })) };
+    globalThis.fetch = async (url, options) => {
+      assert.equal(url, '/api/sources');
+      assert.equal(options.method, 'POST');
+      assert.equal(options.body.get('clientSourceId'), folder.id);
+      assert.deepEqual(JSON.parse(options.body.get('paths')), paths);
+      const uploaded = options.body.getAll('files');
+      assert.deepEqual(uploaded.map(file => file.name), ['main.py', 'main.py']);
+      assert.deepEqual(await Promise.all(uploaded.map(file => file.text())), ['RSA.generate(2048)', 'RSA.generate(2048)']);
+      return Response.json({ id: folder.id, status: 'ready', reports });
+    };
+    await analyzeSource(folder, () => {});
+    assert.equal(folder.status, 'ready', folder.message);
+  }
 
   globalThis.fetch = async url => {
     assert.equal(url, '/api/sources/server-a');
@@ -97,7 +121,7 @@ try {
   await assert.rejects(listSources(), /invalid source list/);
   globalThis.fetch = async () => new Response('', { status: 501 });
   await assert.rejects(listSources(), /backend is not connected/);
-  console.log('Source API checks passed: immediate submission, multipart files, backend errors, source identity, cancellation, and polling recovery.');
+  console.log('Source API checks passed: immediate submission, multipart files and folder paths, backend errors, source identity, cancellation, and polling recovery.');
 } finally {
   globalThis.fetch = originalFetch;
 }

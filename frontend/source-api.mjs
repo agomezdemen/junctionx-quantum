@@ -1,4 +1,6 @@
 // Backend contract is documented in README.md. No scanner or database runs in the browser.
+import { uploadPath } from './file-input.mjs';
+
 async function sourceResponse(response) {
   if ([404, 405, 501].includes(response.status)) throw new Error('Analysis backend is not connected or this source no longer exists. Start python3 server.py and reload.');
   if (!response.ok) {
@@ -44,6 +46,7 @@ export async function analyzeSource(source, onUpdate, { retry = false } = {}) {
       } else {
         options.body = new FormData();
         options.body.append('clientSourceId', source.id);
+        options.body.append('paths', JSON.stringify(source.files.map(uploadPath)));
         for (const file of source.files) options.body.append('files', file, file.name);
       }
       response = await fetch('/api/sources', options);
