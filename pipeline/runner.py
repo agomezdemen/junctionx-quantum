@@ -35,11 +35,13 @@ def process_target(target_path: str, source_type: str = "upload"):
 
     # 1. Registar a nova fonte
     source_name = p.name
-    source_id = create_source(name=source_name, target_path=str(p), source_type=source_type)
+    source_id = create_source(
+        name=source_name, target_path=str(p), source_type=source_type
+    )
     print(f"\n[+] Fonte registada na BD [ID: {source_id}]: {source_name}")
 
     # 2. Despachar para o scanner correto de acordo com a estrutura do ficheiro/diretório
-    
+
     # --- CENÁRIO A: Ficheiro PCAP (Rede) ---
     if p.is_file() and p.suffix.lower() in [".pcap", ".pcapng", ".cap"]:
         out_cbom = f"cbom_network_src_{source_id}.json"
@@ -47,7 +49,7 @@ def process_target(target_path: str, source_type: str = "upload"):
         raw_cbom = analyze_pcap_to_cbom(str(p), output_json="temp_raw.json")
         translated = translate_cbom(raw_cbom)
         classified = classify_cbom(translated)
-        
+
         with open(out_cbom, "w", encoding="utf-8") as f:
             json.dump(classified, f, indent=2)
         if os.path.exists("temp_raw.json"):
@@ -65,7 +67,8 @@ def process_target(target_path: str, source_type: str = "upload"):
             cbom_data = json.load(f)
         # Filtra apenas achados pertencentes a este ficheiro específico se necessário
         cbom_data["components"] = [
-            c for c in cbom_data.get("components", [])
+            c
+            for c in cbom_data.get("components", [])
             if str(Path(c.get("source", "")).resolve()) == str(p)
         ]
         load_code_classification(cbom_data, source_id=source_id)
@@ -75,16 +78,25 @@ def process_target(target_path: str, source_type: str = "upload"):
         # Inspecionar conteúdo do diretório
         files_in_dir = [f for root, _, files in os.walk(p) for f in files]
         has_cloud_configs = any(
-            f in ["kms_key_inventory.json", "acm_certificates.json", "load_balancer_listeners.json"]
+            f
+            in [
+                "kms_key_inventory.json",
+                "acm_certificates.json",
+                "load_balancer_listeners.json",
+            ]
             for f in files_in_dir
         )
         has_code_files = any(f.endswith((".py", ".java", ".go")) for f in files_in_dir)
-        has_pcap_files = [str(Path(p, f)) for f in files_in_dir if f.endswith((".pcap", ".pcapng"))]
+        has_pcap_files = [
+            str(Path(p, f)) for f in files_in_dir if f.endswith((".pcap", ".pcapng"))
+        ]
 
         # 1. Tratar Cloud
         if has_cloud_configs:
             out_cbom = f"cbom_cloud_src_{source_id}.json"
-            print(f"[*] Configurações AWS detetadas. A executar Cloud Posture Scanner...")
+            print(
+                f"[*] Configurações AWS detetadas. A executar Cloud Posture Scanner..."
+            )
             scan_cloud_posture(base_dir=str(p), output_file=out_cbom)
             with open(out_cbom, "r", encoding="utf-8") as f:
                 load_cloud_infrastructure(json.load(f), source_id=source_id)
@@ -106,12 +118,16 @@ def process_target(target_path: str, source_type: str = "upload"):
             classified = classify_cbom(translated)
             load_network_session(classified, source_id=source_id)
 
-    print(f"[✓] Ciclo concluído para a fonte '{source_name}'. Dados carregados na base de dados!")
+    print(
+        f"[✓] Ciclo concluído para a fonte '{source_name}'. Dados carregados na base de dados!"
+    )
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python runner.py <caminho_ficheiro_ou_diretorio> [tipo: upload|git_repo]")
+        print(
+            "Uso: python runner.py <caminho_ficheiro_ou_diretorio> [tipo: upload|git_repo]"
+        )
         sys.exit(1)
 
     input_target = sys.argv[1]
