@@ -1,50 +1,49 @@
 import json
 import os
-from typing import Dict, Any, List
 
-def evaluate_cloud_crypto(key_spec_or_alg: str) -> Dict[str, str]:
-    """Classifica algoritmos de KMS, ACM e Políticas ELB segundo Shor e Grover."""
+
+def evaluate_cloud_crypto(key_spec_or_alg: str) -> dict[str, str]:
+    """Classify KMS, ACM, and ELB policy algorithms against Shor and Grover."""
     val = (key_spec_or_alg or "").upper()
 
-    # 1. Chaves Simétricas Robustas (AES-256)
     if val in ["SYMMETRIC_DEFAULT", "AES_256", "AES-256"]:
         return {
             "tier": "Safe",
             "threat": "None",
-            "reason": "Chave simétrica de 256 bits (AES-256-GCM). Grover reduz a segurança para 128 bits efetivos, permanecendo seguro."
+            "reason": "256-bit symmetric key (AES-256-GCM). Grover reduces effective security to 128 bits, remaining safe.",
         }
 
-    # 2. Criptografia Assimétrica Clássica (Shor)
     if any(k in val for k in ["RSA", "ECC", "ECDSA", "SECP", "PRIME256"]):
         return {
             "tier": "Critical",
             "threat": "Shor",
-            "reason": f"Primitiva assimétrica clássica ({val}) totalmente vulnerável a fatorização ou logaritmo discreto via Algoritmo de Shor."
+            "reason": f"Classical asymmetric primitive ({val}) fully vulnerable to factorization or discrete logarithm via Shor's Algorithm.",
         }
 
-    # 3. Políticas de Load Balancer
     if "ELBSECURITYPOLICY" in val:
         if "TLS13" in val:
             return {
                 "tier": "Critical",
                 "threat": "Shor",
-                "reason": "Política suporta TLS 1.3 mas utiliza curvas clássicas ECDHE da AWS sem grupos híbridos PQC (vulnerável a Harvest Now, Decrypt Later)."
+                "reason": "Policy supports TLS 1.3 but uses classical AWS ECDHE curves without PQC hybrid groups (vulnerable to Harvest Now, Decrypt Later).",
             }
         else:
             return {
                 "tier": "Critical",
                 "threat": "Shor / Legacy",
-                "reason": "Política TLS legada com cifras obsoletas e troca de chaves estática/ECDHE clássica vulnerável a Shor."
+                "reason": "Legacy TLS policy with obsolete ciphers and classical static/ECDHE key exchange vulnerable to Shor.",
             }
 
     return {
         "tier": "Medium",
         "threat": "Grover / Inconclusive",
-        "reason": f"Configuração requer análise adicional: {val}"
+        "reason": f"Configuration requires further analysis: {val}",
     }
 
-def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_file: str = "cbom_cloud.json"):
-    # Suporte tanto se executado de pipeline/ como da raiz do repo
+
+def scan_cloud_posture(
+    base_dir: str = "../input_files/cloud-posture", output_file: str = "cbom_cloud.json"
+):
     if not os.path.exists(base_dir):
         if os.path.exists("input_files/cloud-posture"):
             base_dir = "input_files/cloud-posture"
@@ -55,10 +54,9 @@ def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_fi
     acm_path = os.path.join(base_dir, "acm_certificates.json")
     elb_path = os.path.join(base_dir, "load_balancer_listeners.json")
 
-    components: List[Dict[str, Any]] = []
+    components: list[dict] = []
     stats = {"Critical": 0, "Medium": 0, "Safe": 0}
 
-    # --- 1. KMS Keys ---
     if os.path.exists(kms_path):
         with open(kms_path, "r", encoding="utf-8") as f:
             kms_data = json.load(f)
@@ -67,22 +65,23 @@ def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_fi
             eval_res = evaluate_cloud_crypto(spec)
             stats[eval_res["tier"]] += 1
 
-            components.append({
-                "type": "cloud-kms-key",
-                "name": key.get("AliasName", key.get("KeyId")),
-                "source": kms_path,
-                "arn": key.get("KeyArn"),
-                "cryptoProperties": {
-                    "assetType": "key",
-                    "keySpec": spec,
-                    "keyUsage": key.get("KeyUsage"),
-                    "keyRotationEnabled": key.get("KeyRotationStatus") == "ENABLED",
-                    "origin": key.get("Origin")
-                },
-                "quantumRiskAssessment": eval_res
-            })
+            components.append(
+                {
+                    "type": "cloud-kms-key",
+                    "name": key.get("AliasName", key.get("KeyId")),
+                    "source": kms_path,
+                    "arn": key.get("KeyArn"),
+                    "cryptoProperties": {
+                        "assetType": "key",
+                        "keySpec": spec,
+                        "keyUsage": key.get("KeyUsage"),
+                        "keyRotationEnabled": key.get("KeyRotationStatus") == "ENABLED",
+                        "origin": key.get("Origin"),
+                    },
+                    "quantumRiskAssessment": eval_res,
+                }
+            )
 
-    # --- 2. ACM Certificates ---
     if os.path.exists(acm_path):
         with open(acm_path, "r", encoding="utf-8") as f:
             acm_data = json.load(f)
@@ -91,22 +90,23 @@ def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_fi
             eval_res = evaluate_cloud_crypto(alg)
             stats[eval_res["tier"]] += 1
 
-            components.append({
-                "type": "x509-certificate",
-                "name": cert.get("DomainName"),
-                "source": acm_path,
-                "arn": cert.get("CertificateArn"),
-                "cryptoProperties": {
-                    "assetType": "certificate",
-                    "keyAlgorithm": alg,
-                    "signatureAlgorithm": cert.get("SignatureAlgorithm"),
-                    "type": cert.get("Type"),
-                    "status": cert.get("Status")
-                },
-                "quantumRiskAssessment": eval_res
-            })
+            components.append(
+                {
+                    "type": "x509-certificate",
+                    "name": cert.get("DomainName"),
+                    "source": acm_path,
+                    "arn": cert.get("CertificateArn"),
+                    "cryptoProperties": {
+                        "assetType": "certificate",
+                        "keyAlgorithm": alg,
+                        "signatureAlgorithm": cert.get("SignatureAlgorithm"),
+                        "type": cert.get("Type"),
+                        "status": cert.get("Status"),
+                    },
+                    "quantumRiskAssessment": eval_res,
+                }
+            )
 
-    # --- 3. ELB Listeners ---
     if os.path.exists(elb_path):
         with open(elb_path, "r", encoding="utf-8") as f:
             elb_data = json.load(f)
@@ -115,29 +115,36 @@ def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_fi
             for listener in lb.get("Listeners", []):
                 proto = listener.get("Protocol")
                 if proto not in ["HTTPS", "TLS"]:
-                    continue  # Ignora listeners HTTP sem TLS
+                    continue
 
                 policy = listener.get("SslPolicy", "NONE")
                 eval_res = evaluate_cloud_crypto(policy)
                 stats[eval_res["tier"]] += 1
 
-                components.append({
-                    "type": "load-balancer-listener",
-                    "name": f"{lb_name}:{listener.get('Port')}",
-                    "source": elb_path,
-                    "arn": listener.get("ListenerArn"),
-                    "cryptoProperties": {
-                        "assetType": "protocol-policy",
-                        "protocol": proto,
-                        "port": listener.get("Port"),
-                        "sslPolicy": policy,
-                        "associatedCertificates": [c.get("CertificateArn") for c in listener.get("Certificates", [])]
-                    },
-                    "quantumRiskAssessment": eval_res
-                })
+                components.append(
+                    {
+                        "type": "load-balancer-listener",
+                        "name": f"{lb_name}:{listener.get('Port')}",
+                        "source": elb_path,
+                        "arn": listener.get("ListenerArn"),
+                        "cryptoProperties": {
+                            "assetType": "protocol-policy",
+                            "protocol": proto,
+                            "port": listener.get("Port"),
+                            "sslPolicy": policy,
+                            "associatedCertificates": [
+                                c.get("CertificateArn")
+                                for c in listener.get("Certificates", [])
+                            ],
+                        },
+                        "quantumRiskAssessment": eval_res,
+                    }
+                )
 
     total = len(components)
-    score = round(((stats["Critical"] * 1.0 + stats["Medium"] * 0.4) / max(total, 1)) * 100, 2)
+    score = round(
+        ((stats["Critical"] * 1.0 + stats["Medium"] * 0.4) / max(total, 1)) * 100, 2
+    )
 
     cbom_cloud = {
         "bomFormat": "CycloneDX-CBOM-Draft",
@@ -149,22 +156,23 @@ def scan_cloud_posture(base_dir: str = "../input_files/cloud-posture", output_fi
                 "criticalAssets": stats["Critical"],
                 "mediumAssets": stats["Medium"],
                 "safeAssets": stats["Safe"],
-                "quantumRiskScore": f"{score}%"
-            }
+                "quantumRiskScore": f"{score}%",
+            },
         },
-        "components": components
+        "components": components,
     }
 
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(cbom_cloud, f, indent=2)
 
-    print(f"[✓] CBOM de Cloud criado com sucesso!")
-    print(f"    - Total de Ativos Auditados: {total}")
-    print(f"    - Críticos (Shor): {stats['Critical']}")
-    print(f"    - Médios (Grover): {stats['Medium']}")
-    print(f"    - Seguros (AES-256): {stats['Safe']}")
+    print("[✓] Cloud CBOM successfully created!")
+    print(f"    - Total Assets Audited: {total}")
+    print(f"    - Critical (Shor): {stats['Critical']}")
+    print(f"    - Medium (Grover): {stats['Medium']}")
+    print(f"    - Safe (AES-256): {stats['Safe']}")
     print(f"    - Cloud Quantum Risk Score: {score}%")
-    print(f"    - Ficheiro gravado em: '{output_file}'")
+    print(f"    - File saved to: '{output_file}'")
+
 
 if __name__ == "__main__":
     scan_cloud_posture()
