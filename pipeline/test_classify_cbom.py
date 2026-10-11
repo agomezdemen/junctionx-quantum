@@ -2,11 +2,11 @@ import copy
 import unittest
 
 if __package__:
-    from .classify_cbom import classify_cbom, classify_session, primitive_risk
-    from .translate_cbom import split_cipher_suite, split_group
+    from .classify_network_cbom import classify_cbom, classify_session, primitive_risk
+    from .translate_network_cbom import split_cipher_suite, split_group
 else:
-    from classify_cbom import classify_cbom, classify_session, primitive_risk
-    from translate_cbom import split_cipher_suite, split_group
+    from classify_network_cbom import classify_cbom, classify_session, primitive_risk
+    from translate_network_cbom import split_cipher_suite, split_group
 
 
 def session(suite, group="Not recorded"):
