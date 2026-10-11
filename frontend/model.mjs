@@ -1,7 +1,9 @@
 export const RISKS = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'SAFE', 'UNKNOWN'];
 
 export function riskOf(component) {
-  return RISKS.includes(component?.risk) ? component.risk : 'UNKNOWN';
+  const value = component?.risk ?? component?.quantumRiskAssessment?.tier;
+  const risk = typeof value === 'string' ? value.toUpperCase() : 'UNKNOWN';
+  return RISKS.includes(risk) ? risk : 'UNKNOWN';
 }
 
 export function authenticationRecorded(details) {
@@ -10,6 +12,51 @@ export function authenticationRecorded(details) {
 
 export function algorithmLabel(details) {
   return [details?.algorithm, details?.keySizeBits && `${details.keySizeBits}-bit`, details?.mode, details?.curve, details?.parameterSet].filter(Boolean).join(' · ') || 'Not recorded';
+}
+
+export function reportEntries(reports) {
+  return reports.flatMap(report => report.components.map(component => ({
+    component,
+    source: component.source || report.metadata?.sourceFile || null,
+  })));
+}
+
+export function riskDistribution(entries, basis) {
+  let risks;
+  let omitted = 0;
+  if (basis === 'files') {
+    const files = new Map();
+    // Unknown evidence prevents a file being marked safe; known critical risk still wins.
+    const priority = ['CRITICAL', 'HIGH', 'UNKNOWN', 'MEDIUM', 'LOW', 'SAFE'];
+    for (const { component, source } of entries) {
+      if (!source) { omitted++; continue; }
+      const path = source.replace(/\\/g, '/').replace(/^(?:\.\.?\/)+/, '');
+      const risk = riskOf(component);
+      if (!files.has(path) || priority.indexOf(risk) < priority.indexOf(files.get(path))) files.set(path, risk);
+    }
+    risks = [...files.values()];
+  } else risks = entries.map(({ component }) => riskOf(component));
+  return { total: risks.length, omitted, counts: Object.fromEntries(RISKS.map(risk => [risk, risks.filter(value => value === risk).length])) };
+}
+
+export function algorithmCounts(entries, purpose) {
+  const counts = new Map();
+  let included = 0;
+  for (const { component } of entries) {
+    const crypto = component.cryptoProperties || {};
+    const details = crypto[purpose];
+    let label;
+    if (purpose === 'other') {
+      // Untyped scanner references stay separate: a key's purpose cannot be inferred from its name.
+      label = crypto.detectedAlgorithm || crypto.keySpec || crypto.keyAlgorithm;
+    } else if (details?.algorithm && details.algorithm !== 'Not recorded') {
+      label = details.components?.length ? details.components.map(algorithmLabel).join(' + ') : algorithmLabel(details);
+    }
+    if (!label) continue;
+    counts.set(label, (counts.get(label) || 0) + 1);
+    included++;
+  }
+  return { included, rows: [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])) };
 }
 
 export function parseRepository(value) {
