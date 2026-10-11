@@ -16,7 +16,7 @@ from pcap_scanner import analyze_pcap_to_cbom
 from translate_network_cbom import translate_cbom
 from classify_network_cbom import classify_cbom
 from cloud_posture_scanner import scan_cloud_posture
-from code_scanner_2 import scan_repositories
+from code_scanner import scan_repositories
 
 
 def process_target(target_path: str, source_type: str = "upload"):
