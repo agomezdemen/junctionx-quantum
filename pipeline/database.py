@@ -84,8 +84,8 @@ def init_db(db_path: str = DB_FILE) -> None:
 def create_source(name: str, target_path: str, source_type: str, db_path: str = DB_FILE) -> int:
     init_db(db_path)
     with sqlite3.connect(db_path) as conn:
-        cur = conn.cursor()
-        cur.execute(
+        cursor = conn.cursor()
+        cursor.execute(
             "INSERT INTO input_sources (name, target_path, source_type) VALUES (?, ?, ?)",
             (name, target_path, source_type)
         )
