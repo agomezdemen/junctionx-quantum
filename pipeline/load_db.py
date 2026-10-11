@@ -5,6 +5,7 @@ from database import (
     init_db,
 )
 
+
 def load_network_session(cbom: dict, source_id: int = None):
     init_db()
     for component in cbom.get("components", []):
@@ -37,6 +38,7 @@ def load_network_session(cbom: dict, source_id: int = None):
 
     print("Successfully loaded network sessions into the database!")
 
+
 def load_cloud_infrastructure(cbom: dict, source_id: int = None):
     init_db()
     for component in cbom.get("components", []):
@@ -64,6 +66,7 @@ def load_cloud_infrastructure(cbom: dict, source_id: int = None):
         add_cloud_component(component_data)
 
     print("Successfully loaded cloud infrastructure into the database!")
+
 
 def load_code_classification(cbom: dict, source_id: int = None):
     init_db()

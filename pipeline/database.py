@@ -2,6 +2,7 @@ import sqlite3
 
 DB_FILE = "quantumtrace.db"
 
+
 def get_connection():
     return sqlite3.connect(DB_FILE)
 
@@ -9,8 +10,7 @@ def get_connection():
 def init_db(db_path: str = DB_FILE) -> None:
     with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
-        
-        # 1. Tabela de Fontes
+
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS input_sources (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,8 +22,7 @@ def init_db(db_path: str = DB_FILE) -> None:
                 risk_score REAL DEFAULT 0.0
             ) 
         """)
-        
-        # 2. Classificação de Código (com source_id)
+
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS code_classification (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,7 +40,6 @@ def init_db(db_path: str = DB_FILE) -> None:
             )
         """)
 
-        # 3. Sessões de Rede (com source_id)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS network_session (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +61,6 @@ def init_db(db_path: str = DB_FILE) -> None:
             ) 
         """)
 
-        # 4. Infraestrutura Cloud (com source_id)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS cloud_infrastructure (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,15 +78,17 @@ def init_db(db_path: str = DB_FILE) -> None:
         conn.commit()
 
 
-def create_source(name: str, target_path: str, source_type: str, db_path: str = DB_FILE) -> int:
+def create_source(
+    name: str, target_path: str, source_type: str, db_path: str = DB_FILE
+) -> int:
     init_db(db_path)
     with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO input_sources (name, target_path, source_type) VALUES (?, ?, ?)",
-            (name, target_path, source_type)
+            (name, target_path, source_type),
         )
-        source_id = cur.lastrowid
+        source_id = cursor.lastrowid
         conn.commit()
     return source_id
 
