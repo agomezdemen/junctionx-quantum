@@ -2,7 +2,8 @@
 
 Use the **Mock account** selector to switch between Alex Morgan, Sam Rivera, and Jordan Lee.
 On first use in this browser, existing backend sources are assigned to Alex. New file selections,
-folders, and repositories belong to the account that submits them. The sample workspace is shared.
+folders, and repositories belong to the account that submits them. The frontend hides the backend's
+sample workspace. Accounts with no sources show an empty state and can add their own inputs.
 
 In **Input sources → Added sources**, **Remove** hides one source and **Remove all** hides the
 current account's added sources. Each file/folder selection is a single source. The analysis page's

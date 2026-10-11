@@ -7,9 +7,9 @@ const storage = { getItem: key => data.get(key) ?? null, setItem: (key, value) =
 const workspace = createMockWorkspace(storage);
 const sample = { id: 'sample', kind: 'sample' };
 const existing = { id: 'existing-repo', serverId: 'existing-repo', kind: 'repository' };
-assert.deepEqual(workspace.visible([sample, existing]), [sample, existing]);
+assert.deepEqual(workspace.visible([sample, existing]), [existing]);
 workspace.select('sam');
-assert.deepEqual(workspace.visible([sample, existing]), [sample]);
+assert.deepEqual(workspace.visible([sample, existing]), []);
 
 // A source belongs to its submitting account, even if the server responds after switching accounts.
 const pending = { id: 'client-sam', kind: 'repository', url: 'https://github.com/team/repo.git' };
@@ -33,22 +33,22 @@ try {
   await analysis;
   assert.equal(calls, 1, 'Removing a submitting source must not send a deletion or start polling');
   const saved = { id: 'server-sam', serverId: 'server-sam', kind: 'repository' };
-  assert.deepEqual(workspace.visible([sample, existing, saved]), [sample]);
+  assert.deepEqual(workspace.visible([sample, existing, saved]), []);
   const reloaded = createMockWorkspace(storage);
   assert.equal(reloaded.account.id, 'jordan');
   reloaded.select('sam');
-  assert.deepEqual(reloaded.visible([sample, existing, saved]), [sample], 'Removal survives reload');
+  assert.deepEqual(reloaded.visible([sample, existing, saved]), [], 'Removal survives reload');
   reloaded.select('alex');
-  assert.deepEqual(reloaded.visible([sample, existing, saved]), [sample, existing], 'Ownership remains after removal');
+  assert.deepEqual(reloaded.visible([sample, existing, saved]), [existing], 'Ownership remains after removal');
 
   const alexSource = { id: 'alex-upload', serverId: 'alex-upload', kind: 'files' };
   reloaded.remember(alexSource);
   const anotherTab = createMockWorkspace(storage);
   anotherTab.hide(alexSource);
   reloaded.remember(alexSource);
-  assert.deepEqual(reloaded.visible([sample, alexSource]), [sample], 'Polling cannot undo removal from another tab');
+  assert.deepEqual(reloaded.visible([sample, alexSource]), [], 'Polling cannot undo removal from another tab');
   reloaded.hide(sample);
-  assert.deepEqual(reloaded.visible([sample]), [sample], 'The shared sample cannot be removed');
+  assert.deepEqual(reloaded.visible([sample]), [], 'The backend sample remains hidden');
 } finally {
   globalThis.fetch = originalFetch;
 }
@@ -57,9 +57,9 @@ const blocked = createMockWorkspace({ getItem() { throw new Error('blocked'); },
 const local = { id: 'local', kind: 'files' };
 blocked.remember(local);
 blocked.select('sam');
-assert.deepEqual(blocked.visible([sample, local]), [sample]);
+assert.deepEqual(blocked.visible([sample, local]), []);
 blocked.select('alex');
-assert.deepEqual(blocked.visible([sample, local]), [sample, local]);
+assert.deepEqual(blocked.visible([sample, local]), [local]);
 blocked.hide(local);
-assert.deepEqual(blocked.visible([sample, local]), [sample]);
+assert.deepEqual(blocked.visible([sample, local]), []);
 console.log('Mock workspace checks passed: account ownership, existing-source assignment, reload, pending removal, cross-tab removal, and blocked storage.');

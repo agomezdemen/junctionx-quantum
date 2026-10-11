@@ -1,0 +1,42 @@
+{
+  "Account": "123456789012",
+  "Region": "eu-west-1",
+  "Synthetic": true,
+  "Keys": [
+    {
+      "KeyId": "00000000-0000-4000-8000-000000000001",
+      "KeyArn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000001",
+      "AliasName": "alias/demo-legacy-signing",
+      "KeyUsage": "SIGN_VERIFY",
+      "Origin": "AWS_KMS",
+      "KeyRotationStatus": "NOT_APPLICABLE",
+      "KeySpec": "RSA_2048"
+    },
+    {
+      "KeyId": "00000000-0000-4000-8000-000000000002",
+      "KeyArn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000002",
+      "AliasName": "alias/demo-device-signing",
+      "KeyUsage": "SIGN_VERIFY",
+      "Origin": "AWS_KMS",
+      "KeyRotationStatus": "NOT_APPLICABLE",
+      "KeySpec": "ECC_NIST_P256"
+    },
+    {
+      "KeyId": "00000000-0000-4000-8000-000000000003",
+      "KeyArn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000003",
+      "AliasName": "alias/demo-symmetric-storage",
+      "KeyUsage": "ENCRYPT_DECRYPT",
+      "Origin": "AWS_KMS",
+      "KeyRotationStatus": "ENABLED",
+      "KeySpec": "SYMMETRIC_DEFAULT"
+    },
+    {
+      "KeyId": "00000000-0000-4000-8000-000000000004",
+      "KeyArn": "arn:aws:kms:eu-west-1:123456789012:key/00000000-0000-4000-8000-000000000004",
+      "AliasName": "alias/demo-missing-key-spec",
+      "KeyUsage": "ENCRYPT_DECRYPT",
+      "Origin": "AWS_KMS",
+      "KeyRotationStatus": "NOT_APPLICABLE"
+    }
+  ]
+}

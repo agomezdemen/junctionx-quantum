@@ -58,7 +58,7 @@ export function createMockWorkspace(storage) {
         write('initialized', 'true');
       }
       return saved.filter(source => {
-        if (source.kind === 'sample') return true;
+        if (source.kind === 'sample') return false;
         const entry = record(source.serverId || source.id);
         return entry?.owner === accountId && !entry.hidden;
       });

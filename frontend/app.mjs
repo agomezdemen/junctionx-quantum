@@ -7,12 +7,14 @@ const $ = selector => document.querySelector(selector);
 let browserStorage;
 try { browserStorage = window.localStorage; } catch { /* Browser storage may be disabled. */ }
 const workspace = createMockWorkspace(browserStorage);
-const sampleSource = () => ({ id: 'sample', serverId: 'sample', name: 'Sample workspace', kind: 'sample', status: 'processing', message: 'Loading saved sources…' });
-const sources = [sampleSource()];
+const sources = [];
 let sourcesLoaded = false;
+let workspaceError = '';
 let workspaceRequest = 0;
-let selectedSourceId = 'sample';
+let selectedSourceId = null;
 const activeSource = () => sources.find(source => source.id === selectedSourceId);
+const emptyMessage = () => workspaceError || (sourcesLoaded
+  ? 'No sources yet. Add files, a folder, or a repository to get started.' : 'Loading saved sources…');
 let report = null;
 let detailTrigger;
 const PARTS = [['encryption', 'Encryption'], ['hash', 'Hashing'], ['keyExchange', 'Key exchange'], ['authentication', 'Authentication']];
@@ -38,7 +40,7 @@ async function readReport(file, source = activeSource()) {
 async function loadChartReports() {
   const request = ++chartRequest;
   const source = activeSource();
-  if (source.status !== 'ready') { chartsLoading = false; renderCharts(); return; }
+  if (source?.status !== 'ready') { chartsLoading = false; renderCharts(); return; }
   chartsLoading = true;
   $('#retry-charts').disabled = true;
   renderCharts();
@@ -57,9 +59,9 @@ async function loadChartReports() {
 
 function renderCharts() {
   const source = activeSource();
-  $('#visualizations').setAttribute('aria-busy', String(chartsLoading && source.status === 'ready'));
-  if (source.status !== 'ready') {
-    $('#chart-status').textContent = `${source.name} · ${source.message}`;
+  $('#visualizations').setAttribute('aria-busy', String(chartsLoading && source?.status === 'ready'));
+  if (source?.status !== 'ready') {
+    $('#chart-status').textContent = source ? `${source.name} · ${source.message}` : emptyMessage();
     $('#chart-content').hidden = true;
     $('#retry-charts').hidden = true;
     return;
@@ -150,7 +152,7 @@ async function loadReport() {
   $('#safe-label').textContent = `Safe ${config.unit}`;
   $('#dataset-status').textContent = `Loading ${config.label.toLowerCase()}…`;
   $('#result-count').textContent = 'Loading report…';
-  $('#report-file').textContent = config.file;
+  $('#report-file').textContent = source ? config.file : 'No source selected';
   $('#inventory-description').textContent = reportKind === 'network' ? 'Compare each algorithm’s risk and the overall TLS assessment.' : 'Explore findings and risk ratings reported by the scanner.';
   $('#report-policy').textContent = reportKind === 'network' ? 'Network classifier ratings · missing authentication is excluded from overall risk.' : 'Scanner-provided ratings · code and cloud scanners currently use their own risk rules.';
   $('#search').placeholder = reportKind === 'network' ? 'Search sessions, endpoints, algorithms…' : 'Search files, assets, algorithms, or evidence…';
@@ -161,12 +163,12 @@ async function loadReport() {
   }));
   $('.table-scroll').setAttribute('aria-label', `${config.label} risk assessments`);
   $('caption').textContent = `${config.label}: findings and risk assessments`;
-  if (source.status !== 'ready') {
+  if (source?.status !== 'ready') {
     $('.inventory-panel').setAttribute('aria-busy', 'false');
     $('.metrics').setAttribute('aria-busy', 'false');
-    $('#dataset-status').textContent = `${source.name} · ${source.message}`;
+    $('#dataset-status').textContent = source ? `${source.name} · ${source.message}` : emptyMessage();
     $('#result-count').textContent = 'No analysis results yet';
-    $('#no-results').textContent = source.message;
+    $('#no-results').textContent = source?.message || emptyMessage();
     $('#no-results').hidden = false;
     renderCharts();
     return;
@@ -391,17 +393,20 @@ function renderSources() {
   $('#folder-input').disabled = !sourcesLoaded;
   $('#repo-form button[type="submit"]').disabled = !sourcesLoaded;
   const labels = { ready: 'Ready', processing: 'Analyzing', error: 'Needs attention' };
-  $('#workspace-source').replaceChildren(...sources.map(source => new Option(`${source.name} · ${labels[source.status]}`, source.id)));
-  $('#workspace-source').value = selectedSourceId;
-  $('#source-status').textContent = current.message;
-  $('#source-status').dataset.state = current.status;
-  $('#remove-source').disabled = current.kind === 'sample';
-  $('#retry-source').hidden = current.status !== 'error';
-  $('#retry-source').textContent = current.analysisFailed ? 'Retry analysis' : 'Retry connection';
-  for (const label of document.querySelectorAll('[data-report-origin]')) label.textContent = current.kind === 'sample' ? 'Sample report' : 'Source analysis';
-  $('#added-source-count').textContent = sources.filter(source => source.kind !== 'sample').length;
-  $('#remove-all-sources').disabled = !sourcesLoaded || sources.length <= 1;
-  $('#source-list').replaceChildren(...sources.filter(source => source.kind !== 'sample').map(source => {
+  $('#workspace-source').replaceChildren(...(sources.length
+    ? sources.map(source => new Option(`${source.name} · ${labels[source.status]}`, source.id))
+    : [new Option(sourcesLoaded ? 'No sources yet' : 'Sources unavailable', '')]));
+  $('#workspace-source').value = selectedSourceId || '';
+  $('#workspace-source').disabled = sources.length === 0;
+  $('#source-status').textContent = current?.message || emptyMessage();
+  $('#source-status').dataset.state = current?.status || (workspaceError ? 'error' : sourcesLoaded ? 'empty' : 'processing');
+  $('#remove-source').disabled = !current;
+  $('#retry-source').hidden = current ? current.status !== 'error' : !workspaceError;
+  $('#retry-source').textContent = current?.analysisFailed ? 'Retry analysis' : 'Retry connection';
+  for (const label of document.querySelectorAll('[data-report-origin]')) label.hidden = !current;
+  $('#added-source-count').textContent = sources.length;
+  $('#remove-all-sources').disabled = !sourcesLoaded || sources.length === 0;
+  $('#source-list').replaceChildren(...sources.map(source => {
     const item = element('li', '', 'source-item');
     const button = element('button', '', 'source-choice');
     button.setAttribute('aria-pressed', String(source.id === selectedSourceId));
@@ -420,7 +425,7 @@ function renderSources() {
     item.append(button, remove);
     return item;
   }));
-  $('#sources-empty').hidden = sources.length > 1;
+  $('#sources-empty').hidden = !sourcesLoaded || sources.length > 0;
 }
 
 function refreshScope() {
@@ -458,30 +463,29 @@ function startAnalysis(source, retry = false) {
 async function loadWorkspace() {
   const request = ++workspaceRequest;
   for (const source of sources) if (source.serverId) source.controller?.abort();
-  sources.splice(0, sources.length, sampleSource());
-  selectedSourceId = 'sample';
+  sources.splice(0, sources.length);
+  selectedSourceId = null;
   sourcesLoaded = false;
+  workspaceError = '';
   $('#search').value = '';
   $('#risk-filter').value = 'ALL';
   $('#retry-sources').hidden = true;
-  Object.assign(activeSource(), { status: 'processing', message: 'Loading saved sources…' });
   renderSources();
   refreshScope();
   notice('Loading saved sources…');
   try {
     const saved = await listSources();
     if (request !== workspaceRequest) return;
-    if (!saved.some(source => source.id === 'sample')) throw new Error('The source list is missing the sample workspace. Check the server and retry.');
     sources.splice(0, sources.length, ...workspace.visible(saved));
+    selectedSourceId = sources[0]?.id || null;
     sourcesLoaded = true;
     notice(`${workspace.account.name}’s workspace is ready. New sources will be added to this account.`);
     renderSources();
+    refreshScope();
     for (const source of sources) startAnalysis(source);
   } catch (error) {
     if (request !== workspaceRequest) return;
-    const source = activeSource();
-    source.status = 'error';
-    source.message = error.message;
+    workspaceError = error.message;
     notice(`Could not load saved sources. ${error.message}`);
     $('#retry-sources').hidden = false;
     renderSources();
@@ -490,7 +494,7 @@ async function loadWorkspace() {
 }
 
 function removeSources(removed) {
-  const added = removed.filter(source => source.kind !== 'sample' && sources.includes(source));
+  const added = removed.filter(source => source && sources.includes(source));
   if (!added.length) return;
   for (const source of added) {
     workspace.hide(source);
@@ -498,9 +502,9 @@ function removeSources(removed) {
     if (source.serverId) source.controller?.abort();
     sources.splice(sources.indexOf(source), 1);
   }
-  selectSource(sources.some(source => source.id === selectedSourceId) ? selectedSourceId : 'sample');
+  selectSource(sources.some(source => source.id === selectedSourceId) ? selectedSourceId : sources[0]?.id || null);
   notice(`${added.length === 1 ? added[0].name : `${added.length} sources`} removed from ${workspace.account.name}’s view. Saved analyses are kept.`);
-  (location.hash === '#/analysis' ? $('#workspace-source')
+  (location.hash === '#/analysis' && sources.length ? $('#workspace-source')
     : $('#remove-all-sources').disabled ? $('#mock-account') : $('#remove-all-sources')).focus();
 }
 
@@ -582,7 +586,7 @@ $('#repo-form').addEventListener('submit', event => {
 });
 $('#repo-url').addEventListener('input', () => { $('#repo-error').textContent = ''; $('#repo-url').removeAttribute('aria-invalid'); });
 $('#workspace-source').addEventListener('change', event => selectSource(event.target.value));
-$('#retry-source').addEventListener('click', () => sourcesLoaded ? startAnalysis(activeSource(), true) : loadWorkspace());
+$('#retry-source').addEventListener('click', () => activeSource() ? startAnalysis(activeSource(), true) : loadWorkspace());
 $('#retry-sources').addEventListener('click', loadWorkspace);
 $('#remove-source').addEventListener('click', () => removeSources([activeSource()]));
 $('#search').addEventListener('input', renderSessions);
@@ -605,6 +609,7 @@ $('#session-dialog').addEventListener('close', () => {
 });
 $('#export-report').addEventListener('click', async () => {
   const source = activeSource();
+  if (source?.status !== 'ready') return;
   $('#export-report').disabled = true;
   try {
     const cbom = await exportSourceCbom(source.serverId);
@@ -618,7 +623,7 @@ $('#export-report').addEventListener('click', async () => {
   } catch (error) {
     if (source === activeSource()) $('#source-status').textContent = `Export failed: ${error.message}`;
   } finally {
-    $('#export-report').disabled = activeSource().status !== 'ready';
+    $('#export-report').disabled = activeSource()?.status !== 'ready';
   }
 });
 

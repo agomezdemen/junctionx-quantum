@@ -1,0 +1,196 @@
+{
+  "bomFormat": "CycloneDX-CBOM-Draft",
+  "specVersion": "1.6",
+  "metadata": {
+    "source": "Static Code Cryptographic Inventory (SAST)",
+    "quantumRiskSummary": {
+      "totalFindings": 10,
+      "criticalFindings": 6,
+      "mediumFindings": 4,
+      "safeFindings": 0,
+      "codeQuantumRiskScore": "76.0%"
+    }
+  },
+  "components": [
+    {
+      "type": "application-code",
+      "name": "main.go:22",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/go/batch-pipeline/main.go",
+      "line": 22,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "AES cipher in Go; Grover reduces the effective search space to half the key size."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:13",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/go/invoice-service/main.go",
+      "line": 13,
+      "codeSnippet": "return rsa.GenerateKey(rand.Reader, 1024)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "RSA (crypto/rsa)",
+        "keySize": 1024
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "Asymmetric RSA key in Go vulnerable to Shor's Algorithm."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:23",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/go/telemetry-relay/main.go",
+      "line": 23,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "AES cipher in Go; Grover reduces the effective search space to half the key size."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "main.go:40",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/go/telemetry-relay/main.go",
+      "line": 40,
+      "codeSnippet": "block, err := aes.NewCipher(key)",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "go",
+        "detectedAlgorithm": "AES (crypto/aes)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "AES cipher in Go; Grover reduces the effective search space to half the key size."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "CustomerDirectory.java:8",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/java/CustomerDirectory.java",
+      "line": 8,
+      "codeSnippet": "MessageDigest md5 = MessageDigest.getInstance(\"MD5\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "SHA1/MD5 (Java MessageDigest)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Weak and obsolete cryptographic digest."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "PatchFeed.java:8",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/java/PatchFeed.java",
+      "line": 8,
+      "codeSnippet": "MessageDigest sha1 = MessageDigest.getInstance(\"SHA-1\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "SHA1/MD5 (Java MessageDigest)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Weak and obsolete cryptographic digest."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "ReceiptSigner.java:12",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/java/ReceiptSigner.java",
+      "line": 12,
+      "codeSnippet": "KeyPairGenerator generator = KeyPairGenerator.getInstance(\"RSA\");",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "java",
+        "detectedAlgorithm": "RSA (Java KeyPairGenerator)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Shor",
+        "reason": "RSA key generation in Java vulnerable to Shor."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "license_token.py:11",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/python/license_token.py",
+      "line": 11,
+      "codeSnippet": "return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "Legacy-Hash (SHA1/MD5)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Obsolete hash function with classical collisions and susceptible to Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "license_token.py:16",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/python/license_token.py",
+      "line": 16,
+      "codeSnippet": "public_key.verify(signature, message, padding.PKCS1v15(), hashes.SHA1())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "Legacy-Hash (SHA1/MD5)",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Critical",
+        "threat": "Classical Weakness",
+        "reason": "Obsolete hash function with classical collisions and susceptible to Grover."
+      }
+    },
+    {
+      "type": "application-code",
+      "name": "report_export.py:11",
+      "source": "/home/bean/coding/junctionx-quantum/input_files/sources/532df5b5-ce96-4406-9f1b-857b1cf09253/input/sample-repos/python/report_export.py",
+      "line": 11,
+      "codeSnippet": "cipher = Cipher(algorithms.AES(key), modes.ECB())",
+      "cryptoProperties": {
+        "assetType": "code-primitive",
+        "language": "python",
+        "detectedAlgorithm": "AES",
+        "keySize": null
+      },
+      "quantumRiskAssessment": {
+        "tier": "Medium",
+        "threat": "Grover",
+        "reason": "Standard symmetric cipher; requires keys >= 256 bits to resist Grover."
+      }
+    }
+  ]
+}
